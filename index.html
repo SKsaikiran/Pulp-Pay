@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#5B3FD9"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Pulp Pay</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --p:#5B3FD9;--pg:#ede9ff;--ptxt:#3c2faa;
+  --g:#16a34a;--gg:#dcfce7;--gtxt:#14532d;
+  --r:#dc2626;--rg:#fee2e2;
+  --a:#ea580c;--ag:#fff7ed;--atxt:#9a3412;
+  --bd:#e5e7eb;--bg:#f9fafb;--txt:#111827;--txt2:#6b7280;--txt3:#9ca3af;
+  --card:#ffffff;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -2px rgba(0,0,0,0.06);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -4px rgba(0,0,0,0.05);
+}
+html,body{
+width:100%;
+height:100%;
+font-family:'DM Sans',sans-serif;
+overflow:hidden;
+background:
+radial-gradient(circle at top left, rgba(124,58,237,0.18), transparent 30%),
+radial-gradient(circle at bottom right, rgba(91,63,217,0.22), transparent 35%),
+linear-gradient(135deg,#f5f3ff 0%,#ede9ff 45%,#faf5ff 100%);
+}
+
+.app-shell{
+display:flex;
+align-items:center;
+justify-content:center;
+width:100%;
+height:100dvh;
+overflow:hidden;
+padding:24px;
+position:relative;
+}
+
+.app-shell::before{
+content:'';
+position:absolute;
+width:520px;
+height:520px;
+background:rgba(91,63,217,0.08);
+filter:blur(120px);
+border-radius:50%;
+top:-120px;
+right:-120px;
+pointer-events:none;
+}
+
+.app-shell::after{
+content:'';
+position:absolute;
+width:420px;
+height:420px;
+background:rgba(168,85,247,0.08);
+filter:blur(100px);
+border-radius:50%;
+bottom:-100px;
+left:-100px;
+pointer-events:none;
+}
+
+.phone-wrap{
+position:relative;
+width:100%;
+max-width:420px;
+height:100dvh;
+min-height:100dvh;
+background:var(--card);
+display:flex;
+flex-direction:column;
+overflow:hidden;
+box-shadow:
+0 20px 40px rgba(91,63,217,0.12),
+0 8px 20px rgba(0,0,0,0.08);
+margin:0 auto;
+border-radius:28px;
+border:1px solid rgba(255,255,255,0.7);
+backdrop-filter:blur(10px);
+}
+
+@media (max-width: 768px){
+html,body{
+background:#ffffff;
+}
+
+.app-shell{
+padding:0;
+background:#ffffff;
+}
+
+.app-shell::before,
+.app-shell::after{
+display:none;
+}
+
+.phone-wrap{
+max-width:100%;
+width:100%;
+height:100dvh;
+min-height:100dvh;
+border-radius:0;
+border:none;
+box-shadow:none;
+}
+}
+.app-hdr{background:var(--p);padding:16px 20px 20px;flex-shrink:0;}
+.app-hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.app-hdr-logo{display:flex;align-items:center;gap:8px;}
+.app-hdr-logomark{width:28px;height:28px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.app-hdr-name{font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.2px;}
+.hdr-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;cursor:pointer;}
+.hdr-greeting{font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:2px;}
+.hdr-name{font-size:20px;font-weight:700;color:#fff;letter-spacing:-0.3px;}
+.balance-card{background:rgba(255,255,255,0.12);border-radius:14px;padding:14px 16px;border:1px solid rgba(255,255,255,0.15);margin-top:14px;}
+.bank-cards-container{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+.balance-tab-btn{padding:0 12px;}
+.balance-tab-btn.active{color:#fff !important;border-bottom-color:#fff !important;}
+.balance-tab-btn:not(.active){color:rgba(255,255,255,0.6) !important;border-bottom-color:transparent !important;}
+.bank-balance-card{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.2);position:relative;display:flex;flex-direction:column;gap:8px;cursor:pointer;}
+.bank-balance-card:hover{background:rgba(255,255,255,0.15);}
+.bank-card-header{display:flex;align-items:center;justify-content:space-between;}
+.bank-card-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.bank-card-name{font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);}
+.bank-card-eye-btn{width:24px;height:24px;background:rgba(255,255,255,0.2);border:none;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex-shrink:0;padding:0;transition:background 0.2s;-webkit-tap-highlight-color:transparent;}
+.bank-card-eye-btn:hover{background:rgba(255,255,255,0.3);}
+.bank-card-amount{font-size:18px;font-weight:700;color:#fff;font-family:'DM Mono',monospace;letter-spacing:-0.3px;}
+.bank-card-amount.hidden{color:rgba(255,255,255,0.4);font-size:14px;}
+.bank-card-status{font-size:9px;color:rgba(255,255,255,0.6);margin-top:2px;}
+.total-balance-section{background:rgba(255,255,255,0.15);border-radius:12px;padding:12px 16px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.25);}
+.total-bal-label{font-size:10px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+.total-bal-amount{font-size:24px;font-weight:700;color:#fff;letter-spacing:-0.5px;font-family:'DM Mono',monospace;}
+.bal-label{font-size:10px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;}
+.bal-amount{font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.5px;font-family:'DM Mono',monospace;}
+.bal-sub{font-size:11px;color:rgba(255,255,255,0.5);}
+.screen-body{flex:1;display:flex;flex-direction:column;background:var(--bg);overflow:hidden;position:relative;min-height:0;height:100%;}
+.screen{display:none;flex-direction:column;flex:1;animation:fadeUp 0.25s ease;overflow:hidden;}
+.screen.active{display:flex;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.bottom-nav{background:var(--card);border-top:1px solid var(--bd);display:flex !important;align-items:center;padding:6px 0 calc(6px + env(safe-area-inset-bottom));flex-shrink:0;z-index:10;min-height:60px;width:100%;position:relative;bottom:0;left:0;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;-webkit-tap-highlight-color:transparent;}
+.nav-label{font-size:9px;font-weight:500;color:var(--txt3);transition:color 0.15s;}
+.nav-item.active .nav-label{color:var(--p);font-weight:700;}
+.nav-dot{width:4px;height:4px;border-radius:50%;background:var(--p);margin-top:1px;opacity:0;transition:opacity 0.15s;}
+.nav-item.active .nav-dot{opacity:1;}
+.section-hdr{padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between;}
+.section-title{font-size:13px;font-weight:700;color:var(--txt);letter-spacing:-0.1px;}
+.section-link{font-size:11px;color:var(--p);font-weight:600;cursor:pointer;}
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px 4px;}
+.qa-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.qa-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;transition:transform 0.12s;}
+.qa-item:active .qa-icon{transform:scale(0.93);}
+.qa-label{font-size:10px;color:var(--txt2);font-weight:500;text-align:center;line-height:1.2;}
+.tx-list{display:flex;flex-direction:column;gap:1px;padding:0 16px;}
+.tx-item{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:11px 0;border-bottom:0.5px solid var(--bd);}
+.tx-item:last-child{border-bottom:none;}
+.tx-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.tx-info{display:flex;flex-direction:column;gap:4px;}
+.tx-name{font-size:13px;font-weight:600;color:var(--txt);}
+.tx-sub{font-size:11px;color:var(--txt3);display:flex;align-items:center;gap:4px;}
+.tx-method-icon{width:14px;height:14px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tx-right{display:flex;flex-direction:column;gap:4px;align-items:flex-end;min-width:60px;}
+.tx-amt{font-size:13px;font-weight:700;text-align:right;}
+.tx-amt.credit{color:var(--g);}
+.tx-amt.debit{color:var(--txt);}
+.tx-time{font-size:10px;color:var(--txt3);text-align:right;}
+.pay-screen-inner{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+.pay-hdr{background:var(--p);padding:16px 20px 20px;flex-shrink:0;}
+.pay-hdr-top{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.back-btn{width:32px;height:32px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;border:none;outline:none;padding:0;position:relative;z-index:20;-webkit-tap-highlight-color:transparent;}
+.pay-hdr-title{font-size:15px;font-weight:700;color:#fff;}
+.merchant-pill{background:rgba(255,255,255,0.12);border-radius:12px;padding:12px 14px;border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;gap:10px;}
+.merch-av{width:36px;height:36px;border-radius:10px;background:#FF6B00;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0;}
+.merch-nm{font-size:13px;font-weight:600;color:#fff;}
+.merch-upi{font-size:10px;color:rgba(255,255,255,0.6);margin-top:1px;}
+.merch-verified{margin-left:auto;background:rgba(255,255,255,0.15);border-radius:20px;padding:2px 8px;font-size:9px;color:#fff;font-weight:600;}
+.pay-body{padding:16px;display:flex;flex-direction:column;gap:12px;}
+.amt-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--bd);box-shadow:var(--shadow);}
+.amt-label{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.amt-row{display:flex;align-items:center;gap:4px;}
+.amt-sym{font-size:24px;font-weight:700;color:var(--txt3);}
+.amt-input{font-size:32px;font-weight:700;color:var(--txt);letter-spacing:-0.5px;font-family:'DM Mono',monospace;border:none;outline:none;background:transparent;width:100%;min-width:0;}
+.amt-input::-webkit-outer-spin-button,.amt-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.amt-input[type=number]{-moz-appearance:textfield;}
+.amt-sub{font-size:11px;color:var(--txt3);margin-top:4px;}
+.mode-card{background:var(--card);border-radius:14px;border:1px solid var(--bd);box-shadow:var(--shadow);overflow:hidden;}
+.mode-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 0;}
+.mode-label{font-size:10px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:0.5px;}
+.tog3{display:inline-flex;align-items:center;background:#f3f4f6;border-radius:22px;padding:2px;position:relative;height:28px;}
+.togtrack{position:absolute;top:2px;height:calc(100% - 4px);background:var(--p);border-radius:18px;transition:left 0.28s cubic-bezier(.4,0,.2,1),width 0.28s;z-index:0;pointer-events:none;}
+.topt{width:34px;height:24px;border-radius:18px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;opacity:1;pointer-events:auto;}
+.guide-disable-toggle #topt-relay,.guide-disable-toggle #topt-wallet{opacity:0.4;cursor:not-allowed;pointer-events:none !important;}
+.panel{overflow:hidden;transition:max-height 0.32s cubic-bezier(.4,0,.2,1),opacity 0.22s;}
+.bank-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--bd);}
+.bank-ic{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;flex-shrink:0;}
+.bank-nm{font-size:12px;font-weight:600;color:var(--txt);flex:1;}
+.bank-bl{font-size:11px;color:var(--txt3);}
+.radio-o{width:14px;height:14px;border-radius:50%;border:2px solid var(--p);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:6px;}
+.radio-o.on::after{content:'';width:6px;height:6px;border-radius:50%;background:var(--p);display:block;}
+.upi-pin-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:1000;align-items:center;justify-content:center;animation:fadeIn 0.2s ease;}
+.upi-pin-modal.active{display:flex;}
+.upi-pin-content{background:#fff;border-radius:20px;padding:32px 24px;width:90%;max-width:340px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.15);animation:slideUp 0.3s ease;}
+.upi-pin-title{font-size:18px;font-weight:700;color:var(--txt);margin-bottom:6px;letter-spacing:-0.3px;}
+.upi-pin-subtitle{font-size:13px;color:var(--txt3);margin-bottom:24px;}
+.upi-pin-input-group{display:flex;gap:12px;margin-bottom:28px;justify-content:center;}
+.upi-pin-digit,.mpin-digit{width:56px;height:56px;border:1px solid #e5e7eb;border-radius:12px;font-size:28px;font-weight:700;text-align:center;color:var(--txt);font-family:'DM Mono',monospace;outline:none;transition:all 0.2s;background:#f9fafb;padding:0;}
+.upi-pin-digit:focus,.mpin-digit:focus{border-color:var(--p);background:#fff;box-shadow:0 0 0 3px rgba(91,63,217,0.1);}
+.upi-pin-buttons{display:flex;gap:12px;}
+.upi-pin-btn{flex:1;padding:14px 16px;border-radius:12px;border:none;font-weight:600;font-size:14px;cursor:pointer;transition:opacity 0.2s,transform 0.1s;-webkit-tap-highlight-color:transparent;}
+.upi-pin-btn:active{transform:scale(0.98);}
+.upi-pin-btn.cancel{background:var(--bg);color:var(--txt);border:1px solid var(--bd);}
+.upi-pin-btn.confirm{background:var(--p);color:#fff;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.err-bar{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:#fff7ed;border-top:1px solid #fed7aa;}
+.err-bar svg{flex-shrink:0;margin-top:1px;}
+.err-txt{font-size:10px;color:#9a3412;line-height:1.4;padding-top:0;}
+.srch-wrap{padding:8px 10px 4px;border-top:1px solid var(--bd);}
+.srch-box{display:flex;align-items:center;gap:7px;background:#f3f4f6;border-radius:20px;padding:5px 12px;height:30px;}
+.srch-inp{font-size:11px;color:var(--txt);background:transparent;border:none;outline:none;flex:1;}
+.srch-inp::placeholder{color:var(--txt3);}
+.c-list{overflow-y:auto;max-height:160px;}
+.c-list::-webkit-scrollbar{width:2px;}
+.c-list::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:2px;}
+.c-row{display:flex;align-items:center;gap:10px;padding:8px 14px;cursor:pointer;border-top:1px solid #f9fafb;transition:background 0.1s;-webkit-tap-highlight-color:transparent;}
+.c-row:first-child{border-top:none;}
+.c-row:hover,.c-row:active{background:#f5f3ff;}
+.c-row.sel{background:#ede9ff;}
+.c-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0;}
+.c-nm{font-size:12px;font-weight:600;color:var(--txt);}
+.c-upi{font-size:10px;color:var(--txt3);}
+.sel-bar{background:#ede9ff;border-radius:10px;padding:8px 12px;margin:0 14px 10px;display:flex;align-items:center;gap:8px;border:1px solid #c4b5fd;}
+.slide-btn{margin:0 14px 14px;border-radius:20px;padding:0 6px 0 14px;display:flex;align-items:center;justify-content:space-between;height:48px;cursor:pointer;transition:opacity 0.2s,transform 0.1s;-webkit-tap-highlight-color:transparent;}
+.slide-btn:active{transform:scale(0.98);}
+.slide-btn.dis{opacity:0.3;pointer-events:none;}
+.slide-lbl{font-size:12px;color:rgba(255,255,255,0.9);font-weight:600;}
+.slide-handle{width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.15);}
+.wait-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;gap:8px;background:var(--bg);}
+.wait-ring{width:72px;height:72px;border-radius:50%;background:var(--pg);display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+.wait-ring svg{animation:spinpulse 2s ease-in-out infinite;}
+@keyframes spinpulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+.dots{display:flex;gap:5px;margin-top:14px;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--p);animation:bop 1.3s infinite;}
+.dot:nth-child(2){animation-delay:.2s;}.dot:nth-child(3){animation-delay:.4s;}
+@keyframes bop{0%,80%,100%{transform:scale(0.6);opacity:0.4;}40%{transform:scale(1.2);opacity:1;}}
+.cancel-link{font-size:12px;color:var(--txt3);margin-top:20px;cursor:pointer;text-decoration:underline;}
+.succ-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:4px;}
+.succ-ring{width:76px;height:76px;border-radius:50%;background:var(--gg);display:flex;align-items:center;justify-content:center;margin-bottom:8px;animation:popIn 0.4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+.fail-ring{width:76px;height:76px;border-radius:50%;background:var(--rg);display:flex;align-items:center;justify-content:center;margin-bottom:8px;animation:popIn 0.4s cubic-bezier(.34,1.56,.64,1);}
+.succ-qr{width:100px;height:100px;background:#f3f4f6;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-top:16px;}
+.vendor-label{font-size:11px;color:var(--txt3);margin-top:14px;text-align:center;}
+.done-btn{background:var(--p);color:#fff;border:none;border-radius:14px;padding:14px 32px;font-size:13px;font-weight:700;cursor:pointer;margin-top:20px;width:100%;font-family:'DM Sans',sans-serif;transition:opacity 0.15s;-webkit-tap-highlight-color:transparent;}
+.done-btn:active{opacity:0.85;}
+.retry-btn{background:#fff;color:var(--p);border:2px solid var(--p);border-radius:14px;padding:12px 32px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px;width:100%;font-family:'DM Sans',sans-serif;}
+.scan-area{background:#000;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;position:relative;}
+.qr-frame{width:200px;height:200px;position:relative;}
+.qr-corner{position:absolute;width:24px;height:24px;border-color:#fff;border-style:solid;}
+.qr-corner.tl{top:0;left:0;border-width:3px 0 0 3px;border-radius:4px 0 0 0;}
+.qr-corner.tr{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 4px 0 0;}
+.qr-corner.bl{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 4px;}
+.qr-corner.br{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 4px 0;}
+.scan-line{position:absolute;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--p),transparent);top:0;animation:scan 2s linear infinite;}
+@keyframes scan{0%{top:0;}100%{top:100%;}}
+.scan-label{font-size:13px;color:rgba(255,255,255,0.7);text-align:center;padding:0 20px;}
+.scan-tap-btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:14px;padding:12px 24px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;}
+.scan-tap-btn:active{background:rgba(255,255,255,0.25);}
+.mpin-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+.mpin-overlay.show{display:flex;}
+.mpin-sheet{background:#fff;border-radius:24px 24px 0 0;padding:24px 20px 32px;width:100%;animation:sheetUp 0.3s cubic-bezier(.34,1.56,.64,1);}
+@keyframes sheetUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.mpin-title{font-size:15px;font-weight:700;color:var(--txt);text-align:center;margin-bottom:4px;}
+.mpin-sub{font-size:11px;color:var(--txt3);text-align:center;margin-bottom:20px;}
+.mpin-dots{display:flex;gap:12px;justify-content:center;margin-bottom:24px;}
+.mpin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--bd);transition:background 0.15s,border-color 0.15s;}
+.mpin-dot.filled{background:var(--p);border-color:var(--p);}
+.mpin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.mpin-key{background:#f3f4f6;border:none;border-radius:14px;height:52px;font-size:18px;font-weight:600;color:var(--txt);cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.1s;-webkit-tap-highlight-color:transparent;}
+.mpin-key:active{background:#e5e7eb;}
+.mpin-key.del{font-size:14px;color:var(--txt3);}
+.mpin-key.empty{background:transparent;pointer-events:none;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:3px;}
+.hidden{display:none!important;}
+.guide-overlay{position:absolute;inset:0;z-index:500;pointer-events:none;opacity:0;visibility:hidden;transition:opacity 0.3s,visibility 0.3s;}
+.guide-overlay.active{pointer-events:none;opacity:1;visibility:visible;}
+.guide-spotlight{position:absolute;border-radius:12px;box-shadow:0 0 0 4000px rgba(0,0,0,0.58);pointer-events:none;transition:all 0.35s cubic-bezier(.4,0,.2,1);z-index:501;}
+.guide-tooltip{position:absolute;background:#fff;border-radius:16px;padding:14px 16px;width:230px;box-shadow:0 20px 40px rgba(0,0,0,0.25);pointer-events:auto;z-index:502;}
+.guide-tooltip::before{content:'';position:absolute;width:12px;height:12px;background:#fff;transform:rotate(45deg);}
+.guide-tooltip.arrow-top::before{top:-6px;left:24px;}
+.guide-tooltip.arrow-bottom::before{bottom:-6px;left:24px;}
+.guide-tooltip.arrow-top-right::before{top:-6px;right:24px;}
+.guide-tooltip.arrow-bottom-right::before{bottom:-6px;right:24px;}
+.guide-step-label{font-size:9px;font-weight:800;color:#fff;background:var(--p);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;display:inline-block;padding:2px 7px;border-radius:5px;}
+.guide-title{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:4px;line-height:1.3;}
+.guide-desc{font-size:11px;color:var(--txt2);line-height:1.5;}
+.guide-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+.guide-progress{display:flex;gap:4px;}
+.guide-dot{width:5px;height:5px;border-radius:50%;background:#e5e7eb;transition:background 0.2s;}
+.guide-dot.on{background:var(--p);}
+.guide-btns{display:flex;gap:7px;align-items:center;}
+.guide-skip{font-size:11px;color:var(--txt3);cursor:pointer;padding:4px 0;}
+.guide-next{background:var(--p);color:#fff;border:none;border-radius:10px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.guide-pulse{position:absolute;border-radius:50%;background:rgba(91,63,217,0.3);animation:pulse-ring 1.5s ease-out infinite;pointer-events:none;z-index:503;}
+@keyframes pulse-ring{0%{transform:scale(0.8);opacity:0.8;}100%{transform:scale(1.8);opacity:0;}}
+.guide-choice-card{position:absolute;background:#fff;border-radius:16px;padding:16px;width:260px;box-shadow:0 20px 40px rgba(0,0,0,0.25);pointer-events:auto;z-index:502;}
+.guide-choice-title{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:4px;}
+.guide-choice-desc{font-size:11px;color:var(--txt2);margin-bottom:12px;line-height:1.5;}
+.guide-choice-btn{width:100%;padding:10px;border-radius:10px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:8px;display:flex;align-items:center;gap:8px;transition:opacity 0.15s;}
+.guide-choice-btn:last-child{margin-bottom:0;}
+.guide-choice-btn:active{opacity:0.8;}
+.notif-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);z-index:400;display:none;align-items:flex-start;justify-content:center;padding:60px 16px 0;}
+.notif-overlay.show{display:flex;}
+.notif-card{background:#fff;border-radius:20px;width:100%;max-width:380px;overflow:hidden;box-shadow:var(--shadow-lg);animation:slideDown 0.3s cubic-bezier(.34,1.56,.64,1);}
+@keyframes slideDown{from{transform:translateY(-20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.notif-hdr{background:var(--p);padding:14px 16px;display:flex;align-items:center;gap:10px;}
+.notif-app-ic{width:28px;height:28px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.notif-app-nm{font-size:12px;font-weight:700;color:#fff;}
+.notif-time{font-size:10px;color:rgba(255,255,255,0.6);margin-left:auto;}
+.notif-body{padding:16px;}
+.notif-from{font-size:12px;color:var(--txt2);margin-bottom:4px;}
+.notif-amt{font-size:26px;font-weight:700;color:var(--txt);font-family:'DM Mono',monospace;letter-spacing:-0.3px;}
+.notif-for{font-size:12px;color:var(--txt3);margin-top:4px;}
+.notif-btns{display:flex;gap:8px;padding:0 16px 16px;}
+.notif-btn{flex:1;padding:11px;border-radius:12px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.15s;}
+.notif-btn:active{opacity:0.8;}
+.notif-decline{background:var(--rg);color:var(--r);}
+.notif-pay{background:var(--p);color:#fff;}
+.profile-inner{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+.profile-card{background:var(--card);border-radius:14px;border:1px solid var(--bd);padding:16px;box-shadow:var(--shadow);}
+.profile-avatar{width:56px;height:56px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;margin-bottom:10px;}
+.profile-nm{font-size:16px;font-weight:700;color:var(--txt);}
+.profile-upi{font-size:12px;color:var(--txt3);margin-top:2px;font-family:'DM Mono',monospace;}
+.profile-menu-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--bd);cursor:pointer;}
+.profile-menu-item:last-child{border-bottom:none;}
+.profile-menu-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.profile-menu-label{font-size:13px;font-weight:500;color:var(--txt);flex:1;}
+.profile-menu-chevron{color:var(--txt3);}
+#walletTab,#topt-wallet,#walletPanel{display:none !important;}
+</style>
+
+</head>
+<body>
+<div class="app-shell">
+  <div class="phone-wrap" id="phoneWrap">
+
+    <div class="app-hdr" id="appHdr">
+      <div class="app-hdr-top">
+        <div class="app-hdr-logo">
+          <div class="app-hdr-logomark">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M3 10h10M10 7l3 3-3 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="10" r="2" fill="#fff"/><circle cx="3" cy="10" r="1.4" fill="rgba(255,255,255,0.5)"/></svg>
+          </div>
+          <div class="app-hdr-name">Pulp Pay</div>
+        </div>
+        <div class="hdr-avatar" id="profileBtn" onclick="goScreen('profile')">JK</div>
+      </div>
+      <div class="hdr-greeting">Good morning,</div>
+      <div class="hdr-name">Jay</div>
+      <div class="balance-card" id="balanceCard">
+        <div class="total-balance-section" id="totalBalanceSection" style="display:none;">
+          <div class="total-bal-label">Total Balance</div>
+          <div class="total-bal-amount" id="totalBalanceAmount">₹0.00</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div class="bal-label">Bank Accounts</div>
+          <div class="bal-sub" id="unlockedCount">0/2 unlocked</div>
+        </div>
+        <div class="balance-tabs" style="display:flex;gap:10px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:12px;">
+          <button class="balance-tab-btn active" onclick="switchBalanceTab('accounts')" style="background:none;border:none;padding:0;cursor:pointer;color:#fff;font-size:12px;font-weight:600;padding-bottom:4px;border-bottom:2px solid #fff;transition:opacity 0.2s;-webkit-tap-highlight-color:transparent;">Bank Balance</button>
+        </div>
+        
+        <div id="accountsTab">
+          <div class="bank-cards-container" id="bankCardsContainer">
+            <div class="bank-balance-card" onclick="openUPIPinModal('sbi')">
+              <div class="bank-card-header">
+                <div class="bank-card-icon" style="background:#1F4788;">S</div>
+                <div class="bank-card-name">SBI Saving</div>
+                <button class="bank-card-eye-btn" onclick="unlockedBanks['sbi']?toggleBankBalance('sbi',event):openUPIPinModal('sbi')" id="sbi-eye-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="eye-open"><path d="M12 5C6.5 5 2 8.5 2 12c0 3.5 4.5 7 10 7s10-3.5 10-7-4.5-7-10-7zm0 11c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z" fill="currentColor"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="eye-closed" style="display:none;"><path d="M3 3l18 18M2 12c0-3.5 4.5-7 10-7s10 3.5 10 7-4.5 7-10 7S2 15.5 2 12z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+              <div class="bank-card-amount hidden" id="sbi-amount">••••</div>
+              <div class="bank-card-status" id="sbi-status">Tap to unlock</div>
+            </div>
+
+            <div class="bank-balance-card" onclick="openUPIPinModal('axis')">
+              <div class="bank-card-header">
+                <div class="bank-card-icon" style="background:#ED1C24;">A</div>
+                <div class="bank-card-name">Axis Bank</div>
+                <button class="bank-card-eye-btn" onclick="unlockedBanks['axis']?toggleBankBalance('axis',event):openUPIPinModal('axis')" id="axis-eye-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="eye-open"><path d="M12 5C6.5 5 2 8.5 2 12c0 3.5 4.5 7 10 7s10-3.5 10-7-4.5-7-10-7zm0 11c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z" fill="currentColor"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="eye-closed" style="display:none;"><path d="M3 3l18 18M2 12c0-3.5 4.5-7 10-7s10 3.5 10 7-4.5 7-10 7S2 15.5 2 12z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+              <div class="bank-card-amount hidden" id="axis-amount">••••</div>
+              <div class="bank-card-status" id="axis-status">Tap to unlock</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-body">
+
+      <!-- HOME -->
+      <div class="screen active" id="screen-home">
+        <div style="overflow-y:auto;flex:1;">
+          <div class="section-hdr"><div class="section-title">Quick Actions</div></div>
+          <div class="quick-grid" id="quickGrid">
+            <div class="qa-item" id="qa-scan" onclick="handleScanClick()">
+              <div class="qa-icon" style="background:#ede9ff;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="#5B3FD9" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="#5B3FD9" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="#5B3FD9" stroke-width="1.8"/><rect x="5" y="5" width="3" height="3" fill="#5B3FD9"/><rect x="16" y="5" width="3" height="3" fill="#5B3FD9"/><rect x="5" y="16" width="3" height="3" fill="#5B3FD9"/><path d="M14 14h3M17 14v3M14 17h3M17 17v3" stroke="#5B3FD9" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </div>
+              <div class="qa-label">Scan & Pay</div>
+            </div>
+            <div class="qa-item" onclick="goScreen('contacts')">
+              <div class="qa-icon" style="background:#fce7f3;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#9d174d" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#9d174d" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </div>
+              <div class="qa-label">Contacts</div>
+            </div>
+          </div>
+          <div style="padding:12px 16px 0;">
+            <button onclick="startGuide()" style="width:100%;background:var(--pg);color:var(--ptxt);border:1.5px solid #c4b5fd;border-radius:14px;padding:11px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M3 10h10M10 7l3 3-3 3" stroke="#5B3FD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="10" r="2" fill="#5B3FD9"/></svg>
+              Start Feature Tour
+            </button>
+          </div>
+          <div class="section-hdr" style="margin-top:8px;">
+            <div class="section-title">Recent Activity</div>
+            <div class="section-link" onclick="goScreen('history')">See all</div>
+          </div>
+          <div class="tx-list">
+            <div class="tx-item">
+              <div class="tx-av" style="background:#FF6B00;">J</div>
+              <div class="tx-info"><div class="tx-name">Juice Junction</div><div class="tx-sub"><span class="tx-method-icon" style="background:#ede9ff;"><svg width="10" height="10" viewBox="0 0 20 20" fill="none"><path d="M3 10h10M10 7l3 3-3 3" stroke="#5B3FD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="10" r="2" fill="#5B3FD9"/></svg></span> Pulp Pay</div></div>
+              <div class="tx-right"><div class="tx-amt debit">-₹50</div><div class="tx-time">Today, 11:24 AM</div></div>
+            </div>
+            <div class="tx-item">
+              <div class="tx-av" style="background:#7C3AED;">AK</div>
+              <div class="tx-info"><div class="tx-name">Arjun Kumar</div><div class="tx-sub"><span class="tx-method-icon" style="background:#dcfce7;"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1.5" stroke="#16a34a" stroke-width="1.5"/><path d="M1 7.5h14" stroke="#16a34a" stroke-width="1.2"/></svg></span> Bank transfer</div></div>
+              <div class="tx-right"><div class="tx-amt credit">+₹200</div><div class="tx-time">Today, 10:00 AM</div></div>
+            </div>
+            <div class="tx-item">
+              <div class="tx-av" style="background:#0F766E;">DA</div>
+              <div class="tx-info"><div class="tx-name">Dad</div><div class="tx-sub"><span class="tx-method-icon" style="background:#dcfce7;"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1.5" stroke="#16a34a" stroke-width="1.5"/><path d="M1 7.5h14" stroke="#16a34a" stroke-width="1.2"/></svg></span> Bank transfer</div></div>
+              <div class="tx-right"><div class="tx-amt credit">+₹500</div><div class="tx-time">Yesterday</div></div>
+            </div>
+            <div class="tx-item">
+              <div class="tx-av" style="background:#0284C7;">ZO</div>
+              <div class="tx-info"><div class="tx-name">Zomato</div><div class="tx-sub"><span class="tx-method-icon" style="background:#f3f4f6;"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="7" width="13" height="7" rx="1.2" stroke="#6b7280" stroke-width="1.3"/><path d="M1.5 7l6.5-4.5L14.5 7" stroke="#6b7280" stroke-width="1.3" stroke-linejoin="round"/></svg></span> Bank</div></div>
+              <div class="tx-right"><div class="tx-amt debit">-₹340</div><div class="tx-time">Yesterday</div></div>
+            </div>
+            <div class="tx-item">
+              <div class="tx-av" style="background:#DC2626;">SW</div>
+              <div class="tx-info"><div class="tx-name">Swiggy</div><div class="tx-sub"><span class="tx-method-icon" style="background:#f3f4f6;"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="7" width="13" height="7" rx="1.2" stroke="#6b7280" stroke-width="1.3"/><path d="M1.5 7l6.5-4.5L14.5 7" stroke="#6b7280" stroke-width="1.3" stroke-linejoin="round"/></svg></span> Bank</div></div>
+              <div class="tx-right"><div class="tx-amt debit">-₹210</div><div class="tx-time">2 days ago</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCAN -->
+      <div class="screen" id="screen-scan">
+        <div class="pay-hdr">
+          <div class="pay-hdr-top">
+            <button class="back-btn" onclick="goScreen('home')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="pay-hdr-title">Scan QR</div>
+          </div>
+        </div>
+        <div class="scan-area">
+          <div class="qr-frame">
+            <div class="qr-corner tl"></div><div class="qr-corner tr"></div>
+            <div class="qr-corner bl"></div><div class="qr-corner br"></div>
+            <div class="scan-line"></div>
+          </div>
+          <div class="scan-label">Point your camera at the merchant QR code to pay</div>
+          <button class="scan-tap-btn" id="scanSimBtn" onclick="handleScanSimulate()">Simulate QR Scan</button>
+        </div>
+      </div>
+
+      <!-- PAY -->
+      <div class="screen" id="screen-pay">
+        <div class="pay-screen-inner">
+          <div class="pay-hdr">
+            <div class="pay-hdr-top">
+              <button class="back-btn" onclick="goScreen('scan')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <div class="pay-hdr-title">Pay</div>
+            </div>
+            <div class="merchant-pill">
+              <div class="merch-av">J</div>
+              <div><div class="merch-nm">Juice Junction</div><div class="merch-upi">juicejunction@upi</div></div>
+              <div class="merch-verified">Verified</div>
+            </div>
+          </div>
+          <div class="pay-body">
+            <div class="amt-card" id="amt-card">
+              <div class="amt-label">Amount</div>
+              <div class="amt-row">
+                <div class="amt-sym">₹</div>
+                <input class="amt-input" id="amtInput" type="number" value="0" min="0" max="50000" oninput="onAmtChange(this.value)"/>
+              </div>
+              <div class="amt-sub" id="amtSub">Please enter an amount above ₹12 to proceed</div>
+            </div>
+            <div class="mode-card" id="modeCard">
+              <div class="mode-hdr">
+                <div class="mode-label" id="modeLbl">Pay from</div>
+                <div class="tog3" id="tog3">
+                  <div class="togtrack" id="togtrack" style="left:2px;width:32px;"></div>
+                  <div class="topt" id="topt-bank" onclick="handleToggleClick('bank')" title="Bank">
+                    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" id="icoBank"><rect x="1.5" y="7" width="13" height="7" rx="1.2" stroke="#9ca3af" stroke-width="1.3"/><path d="M1.5 7l6.5-4.5L14.5 7" stroke="#9ca3af" stroke-width="1.3" stroke-linejoin="round"/><rect x="3" y="9" width="2.5" height="3" rx="0.5" fill="#9ca3af"/><rect x="6.75" y="9" width="2.5" height="3" rx="0.5" fill="#9ca3af"/><rect x="10.5" y="9" width="2.5" height="3" rx="0.5" fill="#9ca3af"/></svg>
+                  </div>
+                  <div class="topt" id="topt-relay" onclick="handleToggleClick('relay')" title="Pulp Pay">
+                    <svg width="15" height="15" viewBox="0 0 20 20" fill="none" id="icoRelay"><path d="M3 10h10M10 7l3 3-3 3" stroke="#9ca3af" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="10" r="2" fill="#9ca3af"/><circle cx="3" cy="10" r="1.4" fill="#9ca3af" opacity="0.5"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="panel" id="bankPanel">
+                <div class="bank-row"><div class="bank-ic" style="background:#0055A5;">SBI</div><div class="bank-nm">SBI Savings</div><div class="bank-bl">₹12</div><div class="radio-o on"></div></div>
+                <div class="bank-row" style="opacity:0.5;pointer-events:none;"><div class="bank-ic" style="background:#D0232B;">Axis</div><div class="bank-nm">Axis Bank</div><div class="bank-bl">₹50</div><div class="radio-o"></div></div>
+                <div class="err-bar">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#9a3412" stroke-width="1.4"/><path d="M8 5v4M8 11v.5" stroke="#9a3412" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  <div class="err-txt">Server error or low balance. Try Pulp Pay or another bank instead.</div>
+                </div>
+              </div>
+              <div class="panel" id="relayPanel" style="max-height:0;opacity:0;">
+                <div class="srch-wrap">
+                  <div class="srch-box">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="5" cy="5" r="3.5" stroke="#9ca3af" stroke-width="1.4"/><path d="M8 8l2.5 2.5" stroke="#9ca3af" stroke-width="1.4" stroke-linecap="round"/></svg>
+                    <input class="srch-inp" id="srchInp" placeholder="Search contacts..." oninput="filterContacts(this.value)"/>
+                  </div>
+                </div>
+                <div class="c-list" id="cList"></div>
+              </div>
+            </div>
+            <div class="sel-bar hidden" id="selBar">
+              <div class="c-av" id="selAv" style="width:26px;height:26px;font-size:9px;"></div>
+              <div style="flex:1;"><div style="font-size:11px;font-weight:600;color:var(--ptxt);" id="selName">Selected</div></div>
+            </div>
+          </div>
+          <div style="margin-top:auto;">
+            <div class="slide-btn dis" id="slideBtn" style="background:var(--p);">
+              <div class="slide-lbl" id="slideLbl">Select a bank above</div>
+              <div class="slide-handle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="var(--p)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WAITING -->
+      <div class="screen" id="screen-waiting">
+        <div class="pay-hdr" style="flex-shrink:0;">
+          <div class="pay-hdr-top">
+            <button class="back-btn" onclick="goScreen('pay')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="pay-hdr-title">Request Sent</div>
+          </div>
+        </div>
+        <div class="wait-screen">
+          <div class="wait-ring"><svg width="34" height="34" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#5B3FD9" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="#5B3FD9" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div style="font-size:15px;font-weight:700;color:var(--txt);">Waiting for</div>
+          <div style="font-size:20px;font-weight:700;color:var(--p);" id="waitName">Arjun Kumar</div>
+          <div style="font-size:12px;color:var(--txt3);" id="waitAmtLine">to pay ₹50 to Juice Junction</div>
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div style="font-size:11px;color:var(--txt3);margin-top:16px;text-align:center;max-width:220px;line-height:1.5;">Keep this screen open. It will update once they respond.</div>
+          <div class="cancel-link" onclick="goScreen('pay')">Cancel request</div>
+          <button id="simulateBtn" style="background:var(--p);color:#fff;border:none;border-radius:14px;padding:12px 20px;font-size:12px;font-weight:700;cursor:pointer;margin-top:24px;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:8px;" onclick="handleSimulateContact()">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#fff" stroke-width="1.5"/><path d="M6 5l5 3-5 3V5z" fill="#fff"/></svg>
+            <span id="simulateBtnText">Simulate: contact receives notification</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="screen" id="screen-success">
+        <div class="pay-hdr" style="flex-shrink:0;">
+          <div class="pay-hdr-top">
+            <div style="flex:1;"></div>
+            <div class="pay-hdr-title">Confirmed</div>
+            <div style="flex:1;"></div>
+          </div>
+        </div>
+        <div class="succ-screen">
+          <div id="successTopSection" style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="succ-ring"><svg width="38" height="38" viewBox="0 0 38 38" fill="none"><circle cx="19" cy="19" r="17" stroke="#16a34a" stroke-width="2"/><path d="M12 19l5 5 9-10" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="font-size:16px;font-weight:700;color:var(--g);">Payment Successful</div>
+          <div style="font-size:12px;color:var(--txt3);">Juice Junction received</div>
+          <div style="font-size:30px;font-weight:700;color:var(--txt);font-family:'DM Mono',monospace;letter-spacing:-0.5px;" id="successAmt">₹0</div>
+          <div style="background:var(--pg);border-radius:10px;padding:6px 16px;margin-top:4px;">
+            <div style="font-size:11px;color:var(--p);font-weight:700;text-align:center;" id="paidByLabel">Paid by Arjun Kumar via Pulp Pay</div>
+          </div>
+          <div style="font-size:10px;color:var(--txt3);margin-top:4px;font-family:'DM Mono',monospace;">Ref: RELAY2024884392</div>
+          </div>
+          <div style="width:100%;height:1px;background:var(--bd);margin:16px 0;"></div>
+          <div class="vendor-label">Show this screen to the vendor</div>
+          <div class="succ-qr"><svg width="64" height="64" viewBox="0 0 64 64" fill="none"><rect x="4" y="4" width="22" height="22" rx="2" stroke="#d1d5db" stroke-width="2"/><rect x="38" y="4" width="22" height="22" rx="2" stroke="#d1d5db" stroke-width="2"/><rect x="4" y="38" width="22" height="22" rx="2" stroke="#d1d5db" stroke-width="2"/><rect x="9" y="9" width="12" height="12" rx="1.5" fill="#e5e7eb"/><rect x="43" y="9" width="12" height="12" rx="1.5" fill="#e5e7eb"/><rect x="9" y="43" width="12" height="12" rx="1.5" fill="#e5e7eb"/><rect x="38" y="38" width="6" height="6" fill="#e5e7eb"/><rect x="50" y="38" width="6" height="6" fill="#e5e7eb"/><rect x="44" y="44" width="6" height="6" fill="#e5e7eb"/><rect x="38" y="50" width="6" height="6" fill="#e5e7eb"/><rect x="50" y="50" width="6" height="6" fill="#e5e7eb"/></svg></div>
+          <button class="done-btn" id="doneBtn" onclick="handleSuccessDone()">Back to Home</button>
+        </div>
+      </div>
+
+      <!-- FAILED -->
+      <div class="screen" id="screen-failed">
+        <div class="pay-hdr" style="flex-shrink:0;">
+          <div class="pay-hdr-top">
+            <div style="flex:1;"></div>
+            <div class="pay-hdr-title">Payment Failed</div>
+            <div style="flex:1;"></div>
+          </div>
+        </div>
+        <div class="succ-screen">
+          <div class="fail-ring"><svg width="38" height="38" viewBox="0 0 38 38" fill="none"><circle cx="19" cy="19" r="17" stroke="#dc2626" stroke-width="2"/><path d="M13 13l12 12M25 13L13 25" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+          <div style="font-size:16px;font-weight:700;color:var(--r);">Request Declined</div>
+          <div style="font-size:12px;color:var(--txt3);text-align:center;max-width:240px;line-height:1.5;" id="failReason">The payment request was declined by the contact.</div>
+          <div style="background:var(--rg);border-radius:10px;padding:10px 16px;margin-top:12px;width:100%;">
+            <div style="font-size:11px;color:var(--r);font-weight:700;margin-bottom:4px;">What happened?</div>
+            <div style="font-size:11px;color:#7f1d1d;line-height:1.5;" id="failDetail">The contact received your Pulp Pay request but chose to decline it. This could be a busy moment or they may not have enough funds.</div>
+          </div>
+          <div style="font-size:11px;color:var(--txt3);text-align:center;margin-top:12px;line-height:1.5;">Try sending the request to a different contact, or use your Bank Balance instead.</div>
+          <button class="done-btn" style="background:var(--r);" onclick="goScreen('pay')">Try Again</button>
+          <button class="retry-btn" onclick="goScreen('home')">Back to Home</button>
+        </div>
+      </div>
+
+      <!-- HISTORY -->
+      <div class="screen" id="screen-history">
+        <div class="pay-hdr" style="flex-shrink:0;">
+          <div class="pay-hdr-top">
+            <button class="back-btn" onclick="goScreen('home')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="pay-hdr-title">Transaction History</div>
+          </div>
+        </div>
+        <div class="hist-inner">
+          <div class="hist-date-label">Today</div>
+          <div class="tx-list" style="padding:0 16px;">
+            <div class="tx-item">
+              <div class="tx-av" style="background:#FF6B00;">J</div>
+              <div class="tx-info"><div class="tx-name">Juice Junction</div><div class="tx-sub"><span class="tx-method-icon" style="background:#ede9ff;"><svg width="10" height="10" viewBox="0 0 20 20" fill="none"><path d="M3 10h10M10 7l3 3-3 3" stroke="#5B3FD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="10" r="2" fill="#5B3FD9"/></svg></span> Pulp Pay by Arjun</div></div>
+              <div class="tx-right"><div class="tx-amt debit">-₹50</div><div class="tx-time">11:24 AM</div></div>
+            </div>
+            <div class="tx-item">
+              <div class="tx-av" style="background:#7C3AED;">AK</div>
+              <div class="tx-info"><div class="tx-name">Arjun Kumar</div><div class="tx-sub"><span class="tx-method-icon" style="background:#dcfce7;"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1.5" stroke="#16a34a" stroke-width="1.5"/><path d="M1 7.5h14" stroke="#16a34a" stroke-width="1.2"/></svg></span> Bank transfer</div></div>
+              <div class="tx-right"><div class="tx-amt credit">+₹200</div><div class="tx-time">10:00 AM</div></div>
+            </div>
+          </div>
+          <div class="hist-date-label">Yesterday</div>
+          <div class="tx-list" style="padding:0 16px;">
+            <div class="tx-item">
+              <div class="tx-av" style="background:#0F766E;">DA</div>
+              <div class="tx-info"><div class="tx-name">Dad</div><div class="tx-sub"><span class="tx-method-icon" style="background:#dcfce7;"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1.5" stroke="#16a34a" stroke-width="1.5"/><path d="M1 7.5h14" stroke="#16a34a" stroke-width="1.2"/></svg></span> Bank transfer</div></div>
+              <div class="tx-right"><div class="tx-amt credit">+₹500</div><div class="tx-time">8:00 PM</div></div>
+            </div>
+            <div class="tx-item">
+              <div class="tx-av" style="background:#0284C7;">ZO</div>
+              <div class="tx-info"><div class="tx-name">Zomato</div><div class="tx-sub"><span class="tx-method-icon" style="background:#f3f4f6;"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="7" width="13" height="7" rx="1.2" stroke="#6b7280" stroke-width="1.3"/><path d="M1.5 7l6.5-4.5L14.5 7" stroke="#6b7280" stroke-width="1.3" stroke-linejoin="round"/></svg></span> Bank</div></div>
+              <div class="tx-right"><div class="tx-amt debit">-₹340</div><div class="tx-time">2:15 PM</div></div>
+            </div>
+            <div class="tx-item">
+              <div class="tx-av" style="background:#DC2626;">SW</div>
+              <div class="tx-info"><div class="tx-name">Swiggy</div><div class="tx-sub"><span class="tx-method-icon" style="background:#f3f4f6;"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="7" width="13" height="7" rx="1.2" stroke="#6b7280" stroke-width="1.3"/><path d="M1.5 7l6.5-4.5L14.5 7" stroke="#6b7280" stroke-width="1.3" stroke-linejoin="round"/></svg></span> Bank</div></div>
+              <div class="tx-right"><div class="tx-amt debit">-₹210</div><div class="tx-time">12:30 PM</div></div>
+            </div>
+            <div class="tx-item">
+              <div class="tx-av" style="background:#16a34a;">CC</div>
+              <div class="tx-info"><div class="tx-name">College Canteen</div><div class="tx-sub"><span class="tx-method-icon" style="background:#ede9ff;"><svg width="10" height="10" viewBox="0 0 20 20" fill="none"><path d="M3 10h10M10 7l3 3-3 3" stroke="#5B3FD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="10" r="2" fill="#5B3FD9"/></svg></span> Pulp Pay by Dad </div></div>
+              <div class="tx-right"><div class="tx-amt debit">-₹160</div><div class="tx-time">9:10 AM</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACTS -->
+      <div class="screen" id="screen-contacts">
+        <div class="pay-hdr" style="flex-shrink:0;">
+          <div class="pay-hdr-top">
+            <button class="back-btn" onclick="goScreen('home')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="pay-hdr-title">Trusted Contacts</div>
+          </div>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:11px;color:var(--txt3);line-height:1.5;padding:4px 0 8px;">These contacts can receive Pulp Pay requests from you. They will be notified when you ask them to pay on your behalf.</div>
+          <div id="contactsFullList"></div>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="screen" id="screen-profile">
+        <div class="pay-hdr" style="flex-shrink:0;">
+          <div class="pay-hdr-top">
+            <button class="back-btn" onclick="goScreen('home')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="pay-hdr-title">Profile</div>
+          </div>
+        </div>
+        <div class="profile-inner">
+          <div class="profile-card" style="display:flex;flex-direction:column;">
+            <div class="profile-avatar">JK</div>
+            <div class="profile-nm">Jay</div>
+            <div class="profile-upi">jay@Pulppay</div>
+          </div>
+          <div class="profile-card">
+            <div class="profile-menu-item"><div class="profile-menu-icon" style="background:#dcfce7;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="6" width="12" height="8" rx="1.2" stroke="#16a34a" stroke-width="1.3"/><path d="M5 6V5a3 3 0 016 0v1" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/></svg></div><div class="profile-menu-label">Linked Banks</div><svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="profile-menu-chevron"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="profile-menu-item" style="border-bottom:none;" onclick="goScreen('contacts')"><div class="profile-menu-icon" style="background:#fce7f3;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="7" r="3" stroke="#9d174d" stroke-width="1.3"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="#9d174d" stroke-width="1.3" stroke-linecap="round"/></svg></div><div class="profile-menu-label">Trusted Contacts</div><svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="profile-menu-chevron"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="profile-card" style="background:#fef9c3;border-color:#fde68a;">
+            <div style="font-size:10px;font-weight:700;color:#854d0e;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Conceptual Feature</div>
+            <div style="font-size:11px;color:#92400e;line-height:1.5;">Pulp Pay is a product design concept, not a real application. Built as a UX proposal for how UPI apps could natively support payment delegation.</div>
+          </div>
+          <button onclick="startGuide()" style="background:var(--p);color:#fff;border:none;border-radius:14px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;">Replay Feature Tour</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bottom-nav" id="bottomNav">
+      <div class="nav-item active" id="nav-home" onclick="goScreen('home')">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 9.5L10 3l7 6.5V17a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" stroke="#5B3FD9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 18v-6h6v6" stroke="#5B3FD9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="nav-label">Home</div><div class="nav-dot"></div>
+      </div>
+      <div class="nav-item" id="nav-history" onclick="goScreen('history')">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="2" width="14" height="16" rx="2" stroke="#9ca3af" stroke-width="1.6"/><path d="M7 7h6M7 11h6M7 15h4" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <div class="nav-label">History</div><div class="nav-dot"></div>
+      </div>
+      <div class="nav-item" id="nav-profile" onclick="goScreen('profile')">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3.5" stroke="#9ca3af" stroke-width="1.6"/><path d="M3 18c0-3.9 3.1-7 7-7s7 3.1 7 7" stroke="#9ca3af" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <div class="nav-label">Profile</div><div class="nav-dot"></div>
+      </div>
+    </div>
+
+    <div class="upi-pin-modal" id="upiPinModal">
+      <div class="upi-pin-content">
+        <div class="upi-pin-title">Enter UPI PIN</div>
+        <div class="upi-pin-subtitle" id="pinSubtitle">Verify to see your balance</div>
+        <div class="upi-pin-input-group" id="pinInputGroup">
+          <input type="password" class="upi-pin-digit" maxlength="1" autocomplete="off">
+          <input type="password" class="upi-pin-digit" maxlength="1" autocomplete="off">
+          <input type="password" class="upi-pin-digit" maxlength="1" autocomplete="off">
+          <input type="password" class="upi-pin-digit" maxlength="1" autocomplete="off">
+        </div>
+        <div class="upi-pin-buttons">
+          <button class="upi-pin-btn cancel" onclick="closeUPIPinModal()">Cancel</button>
+          <button class="upi-pin-btn confirm" onclick="verifyUPIPin()">Verify</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="notif-overlay" id="notifOverlay">
+      <div class="notif-card">
+        <div class="notif-hdr">
+          <div class="notif-app-ic"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M3 10h10M10 7l3 3-3 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="10" r="2" fill="#fff"/></svg></div>
+          <div class="notif-app-nm">Pulp Pay Request</div>
+          <div class="notif-time">now</div>
+        </div>
+        <div class="notif-body">
+          <div class="notif-from"><strong style="color:var(--txt);">Jay</strong> is asking you to pay on his behalf</div>
+          <div class="notif-amt" id="notifAmt">₹50</div>
+          <div class="notif-for">to Juice Junction</div>
+        </div>
+        <div class="notif-btns">
+          <button class="notif-btn notif-decline" onclick="declineReq()">Decline</button>
+          <button class="notif-btn notif-pay" id="notifPayBtn" onclick="handleNotifPay()">Pay</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-overlay" id="guideOverlay">
+      <div class="guide-spotlight" id="guideSpot"></div>
+      <div class="guide-pulse" id="gPulse"></div>
+      <div class="guide-tooltip" id="guideTip">
+        <div class="guide-step-label" id="gStepLbl"></div>
+        <div class="guide-title" id="gTitle"></div>
+        <div class="guide-desc" id="gDesc"></div>
+        <div class="guide-footer">
+          <div class="guide-progress" id="gProg"></div>
+          <div class="guide-btns">
+            <div class="guide-skip" onclick="endGuide()">Skip</div>
+            <button class="guide-next" id="gNext" onclick="gNextClick()">Next</button>
+          </div>
+        </div>
+      </div>
+      <div class="guide-choice-card hidden" id="guideChoice" style="left:12px;top:50%;">
+        <div class="guide-choice-title">Tap the toggle above</div>
+        <div class="guide-choice-desc">Which payment method would you like to explore?</div>
+        <button class="guide-choice-btn" style="background:var(--pg);color:var(--ptxt);" onclick="chooseBranch('relay')">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M3 10h10M10 7l3 3-3 3" stroke="#5B3FD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="10" r="2" fill="#5B3FD9"/></svg>
+          Pulp Pay - Ask someone else to pay
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const CX=[
+  {i:'AK',name:'Arjun Kumar',upi:'arjun@paytm',col:'#7C3AED',wallet:'200',wt:'g'},
+  {i:'VM',name:'Vishu Menon',upi:'vishu@gpay',col:'#0284C7',wallet:null,wt:'r'},
+  {i:'DA',name:'Dad',upi:'ramdas@phonepe',col:'#0F766E',wallet:'500',wt:'g'},
+  {i:'PS',name:'Priya S',upi:'priya@upi',col:'#DB2777',wallet:'30',wt:'a'},
+  {i:'KN',name:'Karan Nair',upi:'karan@gpay',col:'#B45309',wallet:null,wt:'r'},
+  {i:'MO',name:'Mom',upi:'sunita@paytm',col:'#7C3AED',wallet:'300',wt:'g'},
+];
+
+let payMode='bank', selContact=null;
+let payAmt=0;
+
+function renderContacts(q=''){
+  const list=document.getElementById('cList');
+  list.innerHTML=CX.filter(c=>c.name.toLowerCase().includes(q.toLowerCase())).map(c=>{
+    const ri=CX.indexOf(c);
+    return `<div class="c-row${selContact===ri?' sel':''}" onclick="handleContactClick(${ri})">
+      <div class="c-av" style="background:${c.col};">${c.i}</div>
+      <div style="flex:1;min-width:0;"><div class="c-nm">${c.name}</div><div class="c-upi">${c.upi}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function filterContacts(q){renderContacts(q);}
+
+function renderContactsPage(){
+  const el=document.getElementById('contactsFullList');
+  el.innerHTML=CX.map(c=>`
+    <div style="background:#fff;border-radius:12px;border:1px solid var(--bd);padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);">
+      <div class="c-av" style="background:${c.col};width:36px;height:36px;font-size:12px;">${c.i}</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--txt);">${c.name}</div><div style="font-size:10px;color:var(--txt3);margin-top:2px;">${c.upi}</div></div>
+    </div>`).join('');
+}
+
+function handleContactClick(idx){
+  selectContact(idx);
+  if(guideActive&&guideWaitingFor==='contact'){guideWaitingFor=null;setTimeout(()=>showGuideStep(gStep+1),200);}
+}
+
+function selectContact(idx){
+  selContact=idx;
+  renderContacts(document.getElementById('srchInp').value);
+  const sc=CX[idx];
+  const bar=document.getElementById('selBar');
+  bar.classList.remove('hidden');
+  document.getElementById('selAv').style.background=sc.col;
+  document.getElementById('selAv').textContent=sc.i;
+  document.getElementById('selName').textContent='Sending to: '+sc.name;
+  updateSlideBtn();
+}
+
+function onAmtChange(v){
+  const n=parseInt(v)||0;
+  payAmt=n;
+  
+  if(payAmt===0){
+    document.getElementById('amtSub').textContent='Please enter an amount above ₹12 to proceed';
+    document.getElementById('slideLbl').textContent='Enter amount above ₹12';
+  } else if(payAmt<=12){
+    document.getElementById('amtSub').textContent='Amount must be more than ₹12';
+    document.getElementById('slideLbl').textContent='Amount must be > ₹12';
+  } else {
+    document.getElementById('amtSub').textContent='Juice Junction will receive ₹'+payAmt.toFixed(2);
+    document.getElementById('slideLbl').innerHTML=payMode==='relay'?'Slide to send request':'Slide to pay';
+    
+    // Guide detection for amount entered
+    if(guideActive&&guideWaitingFor==='amountEntered'){
+      guideWaitingFor=null;
+      setTimeout(()=>showGuideStep(gStep+1),300);
+    }
+  }
+  
+  document.getElementById('notifAmt').textContent='₹'+payAmt;
+  document.getElementById('notifPayBtn').textContent='Pay ₹'+payAmt;
+  document.getElementById('waitAmtLine').textContent='to pay ₹'+payAmt+' to Juice Junction';
+  document.getElementById('successAmt').textContent='₹'+payAmt;
+  updateSlideBtn();
+}
+
+function handleToggleClick(m){
+  if(guideActive&&guideWaitingFor==='toggle'){
+    guideWaitingFor=null;
+    setMode(m);
+    setTimeout(()=>{if(m==='relay')chooseBranch('relay');},300);
+    return;
+  }
+  setMode(m);
+}
+
+function setMode(m){
+  payMode=m;
+  selContact=null;
+  document.getElementById('selBar').classList.add('hidden');
+  document.getElementById('srchInp').value='';
+  const bp=document.getElementById('bankPanel'),rp=document.getElementById('relayPanel');
+  const tt=document.getElementById('togtrack'),lbl=document.getElementById('modeLbl');
+  ['bank','relay'].forEach(mode=>{
+    const el=document.getElementById('topt-'+mode);
+    el.querySelectorAll('[stroke],[fill]').forEach(s=>{
+      if(s.getAttribute('stroke')&&s.getAttribute('stroke')!=='none')s.setAttribute('stroke',mode===m?'#fff':'#9ca3af');
+      if(s.getAttribute('fill')&&s.getAttribute('fill')!=='none'&&!s.getAttribute('opacity'))s.setAttribute('fill',mode===m?'#fff':'#9ca3af');
+    });
+  });
+  const leftMap={bank:2,relay:36};
+  tt.style.left=leftMap[m]+'px';tt.style.width='32px';
+  tt.style.background='var(--p)';
+  bp.style.maxHeight=m==='bank'?'200px':'0';bp.style.opacity=m==='bank'?'1':'0';
+  rp.style.maxHeight=m==='relay'?'250px':'0';rp.style.opacity=m==='relay'?'1':'0';
+  lbl.textContent=m==='bank'?'Pay from':'Ask someone to pay';
+  if(m==='relay')renderContacts();
+  updateSlideBtn();
+}
+
+function updateSlideBtn(){
+  const btn=document.getElementById('slideBtn'),lbl=document.getElementById('slideLbl');
+  
+  if(payAmt===0 || payAmt<=12){
+    btn.classList.add('dis');lbl.textContent=payAmt===0?'Enter amount above ₹12':'Amount must be > ₹12';
+    btn.onclick=null;
+  } else if(payMode==='bank'){
+    btn.classList.add('dis');lbl.textContent='Server error - try Pulp Pay';
+    btn.onclick=null;
+  } else if(payMode==='relay'){
+    if(selContact!==null){
+      btn.classList.remove('dis');lbl.textContent='Slide to send request';
+      btn.onclick=()=>handleSlideSend();
+    } else {
+      btn.classList.add('dis');lbl.textContent='Pick a contact above';
+    }
+  }
+}
+
+function handleSlideSend(){
+  if(guideActive&&guideWaitingFor==='slide'){guideWaitingFor=null;sendRequest();setTimeout(()=>showGuideStep(gStep+1),400);return;}
+  sendRequest();
+}
+
+function sendRequest(){
+  const sc=CX[selContact];
+  document.getElementById('waitName').textContent=sc.name;
+  document.getElementById('waitAmtLine').textContent='to pay ₹'+payAmt+' to Juice Junction';
+  document.getElementById('simulateBtnText').textContent='Simulate: '+sc.name.split(' ')[0]+' receives notification';
+  goScreen('waiting');
+}
+
+function handleSimulateContact(){
+  if(guideActive&&guideWaitingFor==='simulate'){guideWaitingFor=null;document.getElementById('notifOverlay').classList.add('show');setTimeout(()=>showGuideStep(gStep+1),200);return;}
+  document.getElementById('notifOverlay').classList.add('show');
+}
+
+function declineReq(){
+  document.getElementById('notifOverlay').classList.remove('show');
+  const sc=selContact!==null?CX[selContact]:CX[0];
+  document.getElementById('failReason').textContent=sc.name+' declined your payment request for ₹'+payAmt+'.';
+  document.getElementById('failDetail').textContent=sc.name+' received your Pulp Pay request but chose to decline. They may be busy or unavailable right now. Try another contact or use your Bank Balance.';
+  if(guideActive&&guideWaitingFor==='pay'){
+    guideWaitingFor=null;goScreen('failed');setTimeout(()=>showGuideStep(gStep+1),400);return;
+  }
+  goScreen('failed');
+}
+
+function handleNotifPay(){
+  if(guideActive&&guideWaitingFor==='pay'){guideWaitingFor=null;acceptPay();setTimeout(()=>showGuideStep(gStep+1),400);return;}
+  acceptPay();
+}
+
+function acceptPay(){
+  document.getElementById('notifOverlay').classList.remove('show');
+  const sc=CX[selContact!==null?selContact:0];
+  document.getElementById('paidByLabel').textContent='Paid by '+sc.name+' via Pulp Pay';
+  document.getElementById('successAmt').textContent='₹'+payAmt;
+  goScreen('success');
+}
+
+function handleSuccessDone(){
+  if(guideActive){endGuide();}
+  goScreen('home');
+}
+
+function handleScanClick(){
+  payAmt=0;
+  document.getElementById('amtInput').value='0';
+  document.getElementById('amtSub').textContent='Please enter an amount above ₹12 to proceed';
+  if(guideActive&&guideWaitingFor==='scanBtn'){guideWaitingFor=null;goScreen('scan');setTimeout(()=>showGuideStep(gStep+1),200);return;}
+  goScreen('scan');
+}
+
+function handleScanSimulate(){
+  if(guideActive&&guideWaitingFor==='scanSim'){guideWaitingFor=null;goScreen('pay');setTimeout(()=>showGuideStep(gStep+1),200);return;}
+  goScreen('pay');
+}
+
+const HIDE_HDR=['scan','pay','waiting','success','failed','history','profile','contacts'];
+const HIDE_NAV=['scan','waiting','success','failed'];
+const NAV_MAP={home:'home',scan:'home',pay:'home',waiting:'home',success:'home',failed:'home',history:'history',profile:'profile',contacts:'home'};
+
+function goScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const s=document.getElementById('screen-'+id);
+  if(s)s.classList.add('active');
+  const hdr=document.getElementById('appHdr'),nav=document.getElementById('bottomNav');
+  hdr.style.display=HIDE_HDR.includes(id)?'none':'';
+  nav.style.display=HIDE_NAV.includes(id)?'none':'flex';
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const an=document.getElementById('nav-'+(NAV_MAP[id]||id));
+  if(an)an.classList.add('active');
+  if(id==='pay'&&!guideActive){payMode='bank';selContact=null;setMode('bank');}
+  if(id==='contacts')renderContactsPage();
+  if(guideActive)setTimeout(()=>repositionGuide(),50);
+}
+
+let guideActive=false,gStep=0,guideBranch='none',guideWaitingFor=null;
+
+const GUIDE_STEPS_BASE=[
+  {screen:'home',target:'qa-scan',pos:'bottom',
+   title:'Tap "Scan QR" to begin',
+   desc:'Every Pulp Pay payment starts by scanning a merchant QR code. Go ahead, tap it now.',
+   waitFor:'scanBtn'},
+  {screen:'scan',target:'scanSimBtn',pos:'bottom',
+   title:'You are in the scanner',
+   desc:'In real life you would point your camera at a QR. Here, tap the button to simulate scanning Juice Junction\'s QR code.',
+   waitFor:'scanSim'},
+  {screen:'pay',target:'amt-card',pos:'top',
+   title:'Enter the payment amount',
+   desc:'Enter the amount you want to request. In this case, enter ₹50. The contact will see this amount in their notification.',
+   waitFor:'amountEntered'},
+  {screen:'pay',target:'modeCard',pos:'bottom',
+   title:'Server error - bank cannot pay',
+   desc:'The bank is selected by default. Notice: Axis bank has funds and the server is down along SBI has low funds. Pulp Pay solves this. Tap Next.',
+   waitFor:null},
+  {screen:'pay',target:'tog3',pos:'bottom',
+   title:'Tap the Pulp Pay toggle',
+   desc:'Click the right toggle button (Pulp Pay icon) to ask someone else to pay on your behalf.',
+   waitFor:'toggle'},
+];
+
+const GUIDE_RELAY=[
+  {screen:'pay',target:'cList',pos:'bottom',
+   title:'Pick a contact',
+   desc:'These are your trusted contacts. Tap any contact to select them.',
+   waitFor:'contact'},
+  {screen:'pay',target:'slideBtn',pos:'above-btn',
+   title:'Slide to send request',
+   desc:'Once a contact is selected, tap the slide button. This sends a live notification asking them to pay on your behalf.',
+   waitFor:'slide'},
+  {screen:'waiting',target:'simulateBtn',pos:'above-btn',
+   title:'Waiting for response',
+   desc:'Your contact received a notification on their phone. Tap the simulate button to see what they see.',
+   waitFor:'simulate'},
+  {screen:'waiting',target:'notifPayBtn',pos:'bottom',
+   title:'Contact\'s notification',
+   desc:'They see this pop-up on their default Payment app. They can Pay or Decline. Tap Pay to complete the transaction.',
+   waitFor:'pay'},
+  {screen:'success',target:'successTopSection',pos:'bottom',
+   title:'Payment confirmed',
+   desc:'Your contact paid Juice Junction using their own bank. Their bank was debited directly. You will see a confirmation like this.',
+   waitFor:null},
+  {screen:'success',target:'doneBtn',pos:'above-btn',
+   title:'Flow complete',
+   desc:'You have completed the full Pulp Pay flow: Scan QR, server error, Pulp Pay toggle, pick contact, send request, contact pays, success.',
+   waitFor:null,last:true},
+];
+
+function getStepList(){
+  if(guideBranch==='relay')return GUIDE_STEPS_BASE.concat(GUIDE_RELAY);
+  return GUIDE_STEPS_BASE;
+}
+
+function startGuide(){
+  gStep=0;guideBranch='none';guideWaitingFor=null;guideActive=true;
+  goScreen('home');payMode='bank';selContact=null;
+  setMode('bank');
+  
+  // Reset guide overlay and spotlight styles
+  const overlay=document.getElementById('guideOverlay');
+  const spot=document.getElementById('guideSpot');
+  const pulse=document.getElementById('gPulse');
+  const tip=document.getElementById('guideTip');
+  
+  overlay.classList.add('active');
+  spot.style.width='0px';
+  spot.style.height='0px';
+  spot.style.boxShadow='0 0 0 4000px rgba(0,0,0,0.58)';
+  pulse.style.opacity='0';
+  tip.style.display='';
+  tip.style.pointerEvents='auto';
+  tip.style.left='';
+  tip.style.top='';
+  
+  setTimeout(()=>showGuideStep(0),200);
+}
+
+function showGuideStep(i){
+  gStep=i;
+  const steps=getStepList(),step=steps[i];
+  if(!step){endGuide();return;}
+  if(step.screen)goScreen(step.screen);
+  
+  const tog3=document.getElementById('tog3');
+  if(i===3){
+    tog3.classList.add('guide-disable-toggle');
+  }else{
+    tog3.classList.remove('guide-disable-toggle');
+  }
+  
+  guideWaitingFor=step.waitFor||null;
+  document.getElementById('guideChoice').classList.add('hidden');
+  document.getElementById('guideTip').classList.remove('hidden');
+  const nb=document.getElementById('gNext');
+  nb.textContent=step.nextLabel||'Next';
+  nb.disabled=!!step.waitFor;
+  nb.style.opacity=step.waitFor?'0.4':'1';
+  nb.style.cursor=step.waitFor?'default':'pointer';
+  
+  setTimeout(()=>positionGuide(step,i),step.screen?250:50);
+}
+
+function positionGuide(step,i){
+  const steps=getStepList();
+  const spot=document.getElementById('guideSpot'),tip=document.getElementById('guideTip');
+  const pulse=document.getElementById('gPulse'),phone=document.getElementById('phoneWrap');
+  const PR=phone.getBoundingClientRect();
+
+  document.getElementById('gStepLbl').textContent='GUIDE';
+  document.getElementById('gTitle').textContent=step.title;
+  document.getElementById('gDesc').textContent=step.desc;
+  const total=getStepList().length;
+  document.getElementById('gProg').innerHTML=
+    Array.from({length:total},(_,j)=>`<div class="guide-dot ${j===i?'on':''}"></div>`).join('');
+
+  if(step.showChoice){
+    document.getElementById('guideTip').classList.add('hidden');
+    const ch=document.getElementById('guideChoice');
+    ch.classList.remove('hidden');
+    const el=document.getElementById('tog3');
+    if(el){
+      const ER=el.getBoundingClientRect();
+      ch.style.top=(ER.top-PR.top+ER.height+10)+'px';
+      ch.style.left='12px';
+    }
+    return;
+  }
+
+  if(!step.target){
+    spot.style.width='0px';spot.style.height='0px';
+    spot.style.left=(PR.width/2)+'px';spot.style.top=(PR.height/2)+'px';
+    pulse.style.opacity='0';
+    const tipW=230;
+    tip.style.left=(PR.width/2-tipW/2)+'px';
+    tip.style.top=(PR.height/2-90)+'px';
+    tip.className='guide-tooltip';
+    return;
+  }
+
+  if(step.pos==='above-btn'){
+    const el=document.getElementById(step.target);
+    if(!el){showGuideStep(i+1);return;}
+    const wsInner=document.querySelector('#screen-success .succ-screen');
+    const payInner=document.querySelector('#screen-pay .pay-screen-inner');
+    if(wsInner && wsInner.contains(el)) wsInner.scrollTop=wsInner.scrollHeight;
+    if(payInner && payInner.contains(el)) payInner.scrollTop=payInner.scrollHeight;
+    setTimeout(()=>{
+      const ER=el.getBoundingClientRect();
+      const pad=6;
+      const ex=ER.left-PR.left-pad,ey=ER.top-PR.top-pad;
+      const ew=ER.width+pad*2,eh=ER.height+pad*2;
+      spot.style.left=ex+'px';spot.style.top=ey+'px';
+      spot.style.width=ew+'px';spot.style.height=eh+'px';
+      const cx=ex+ew/2,cy=ey+eh/2;
+      pulse.style.width='32px';pulse.style.height='32px';
+      pulse.style.left=(cx-16)+'px';pulse.style.top=(cy-16)+'px';
+      pulse.style.opacity='1';
+      const tipW=230,margin=10;
+      let ty=ey-175-margin;
+      if(ty<8)ty=8;
+      const tx=Math.max(8,Math.min(PR.width/2-tipW/2,PR.width-tipW-8));
+      tip.style.left=tx+'px';tip.style.top=ty+'px';
+      tip.className='guide-tooltip arrow-bottom';
+    },150);
+    return;
+  }
+
+  const el=document.getElementById(step.target);
+  if(!el){showGuideStep(i+1);return;}
+  
+  // Handle top position with scroll
+  if(step.pos==='top'){
+    const payInner=document.querySelector('#screen-pay .pay-screen-inner');
+    if(payInner && payInner.contains(el)) payInner.scrollTop=0;
+    setTimeout(()=>{
+      const ER=el.getBoundingClientRect();
+      const pad=6;
+      const ex=ER.left-PR.left-pad,ey=ER.top-PR.top-pad;
+      const ew=ER.width+pad*2,eh=ER.height+pad*2;
+      spot.style.left=ex+'px';spot.style.top=ey+'px';
+      spot.style.width=ew+'px';spot.style.height=eh+'px';
+      const cx=ex+ew/2,cy=ey+eh/2;
+      pulse.style.width='32px';pulse.style.height='32px';
+      pulse.style.left=(cx-16)+'px';pulse.style.top=(cy-16)+'px';
+      pulse.style.opacity='1';
+      const tipW=230,margin=10;
+      let ty=ey+eh+margin;
+      let tx=Math.max(8,Math.min(ex,PR.width-tipW-8));
+      if(ty+200>PR.height){ty=ey-200-margin;}
+      tip.style.left=tx+'px';tip.style.top=ty+'px';
+      tip.className='guide-tooltip arrow-top';
+    },150);
+    return;
+  }
+  
+  const ER=el.getBoundingClientRect();
+  const pad=6;
+  const ex=ER.left-PR.left-pad,ey=ER.top-PR.top-pad;
+  const ew=ER.width+pad*2,eh=ER.height+pad*2;
+  spot.style.left=ex+'px';spot.style.top=ey+'px';
+  spot.style.width=ew+'px';spot.style.height=eh+'px';
+  const cx=ex+ew/2,cy=ey+eh/2;
+  pulse.style.width='32px';pulse.style.height='32px';
+  pulse.style.left=(cx-16)+'px';pulse.style.top=(cy-16)+'px';
+  pulse.style.opacity='1';
+  const tipW=230,margin=10;
+  let tx,ty,arrowClass;
+  if(step.pos==='bottom'){
+    ty=ey+eh+margin;tx=Math.max(8,Math.min(ex,PR.width-tipW-8));arrowClass='arrow-top';
+    if(ty+200>PR.height){ty=ey-200-margin;arrowClass='arrow-bottom';}
+  } else {
+    ty=ey-200-margin;tx=Math.max(8,Math.min(ex,PR.width-tipW-8));arrowClass='arrow-bottom';
+    if(ty<8){ty=ey+eh+margin;arrowClass='arrow-top';}
+  }
+  tip.style.left=tx+'px';tip.style.top=ty+'px';
+  tip.className='guide-tooltip '+arrowClass;
+}
+
+function repositionGuide(){
+  if(!guideActive)return;
+  const steps=getStepList(),step=steps[gStep];
+  if(step)positionGuide(step,gStep);
+}
+
+function gNextClick(){
+  const steps=getStepList(),step=steps[gStep];
+  if(step&&step.waitFor)return;
+  showGuideStep(gStep+1);
+}
+
+function chooseBranch(b){
+  guideBranch=b;setMode(b);
+  document.getElementById('guideChoice').classList.add('hidden');
+  document.getElementById('guideTip').classList.remove('hidden');
+  guideWaitingFor=null;
+  showGuideStep(5);
+}
+
+function endGuide(){
+  guideActive=false;guideWaitingFor=null;
+  const overlay=document.getElementById('guideOverlay');
+  overlay.classList.remove('active');
+  const tog3=document.getElementById('tog3');
+  tog3.classList.remove('guide-disable-toggle');
+  const tip=document.getElementById('guideTip');
+  tip.style.display='none';
+  tip.style.left='-9999px';tip.style.top='-9999px';
+  tip.style.pointerEvents='none';
+  const ch=document.getElementById('guideChoice');
+  ch.classList.add('hidden');
+  ch.style.left='-9999px';
+  const spot=document.getElementById('guideSpot');
+  spot.style.width='0';spot.style.height='0';
+  spot.style.boxShadow='none';
+  document.getElementById('gPulse').style.opacity='0';
+}
+
+window.addEventListener('load',()=>{
+  goScreen('home');
+  setMode('bank');
+  localStorage.removeItem('rp_guided');
+  setTimeout(startGuide,800);
+});
+window.addEventListener('resize',()=>{if(guideActive)setTimeout(repositionGuide,100);});
+
+const bankBalances={sbi:12,axis:50};
+const unlockedBanks={};
+
+function openUPIPinModal(bank){
+  currentPinBank=bank;
+  const modal=document.getElementById('upiPinModal');
+  modal.classList.add('active');
+  const inputs=modal.querySelectorAll('.upi-pin-digit');
+  inputs.forEach(inp=>{inp.value='';inp.focus();});
+  inputs[0].focus();
+  
+  inputs.forEach((inp,i)=>{
+    inp.addEventListener('input',(e)=>{
+      if(e.target.value&&i<inputs.length-1){
+        inputs[i+1].focus();
+      }
+    });
+    inp.addEventListener('keydown',(e)=>{
+      if(e.key==='Backspace'&&!e.target.value&&i>0){
+        inputs[i-1].focus();
+      }
+    });
+  });
+}
+
+function closeUPIPinModal(){
+  const modal=document.getElementById('upiPinModal');
+  modal.classList.remove('active');
+  currentPinBank=null;
+}
+
+function verifyUPIPin(){
+  const inputs=document.querySelectorAll('.upi-pin-digit');
+  const pin=Array.from(inputs).map(inp=>inp.value).join('');
+  
+  if(pin.length!==4){
+    alert('Please enter a 4-digit PIN');
+    return;
+  }
+  
+  if(pin.match(/^\d{4}$/)){
+    unlockBankBalance(currentPinBank);
+    closeUPIPinModal();
+  }else{
+    alert('Invalid PIN');
+  }
+}
+
+function unlockBankBalance(bank){
+  unlockedBanks[bank]=true;
+  const amountEl=document.getElementById(bank+'-amount');
+  const statusEl=document.getElementById(bank+'-status');
+  const eyeBtn=document.getElementById(bank+'-eye-btn');
+  const balance=bankBalances[bank];
+  
+  const formatted='₹'+balance.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+  amountEl.textContent=formatted;
+  amountEl.classList.remove('hidden');
+  amountEl.dataset.visible='true';
+  statusEl.textContent='Unlocked';
+  statusEl.style.color='rgba(34,197,94,0.8)';
+  
+  eyeBtn.querySelector('.eye-open').style.display='block';
+  eyeBtn.querySelector('.eye-closed').style.display='none';
+  
+  updateTotalBalance();
+}
+
+function toggleBankBalance(bank,e){
+  e.stopPropagation();
+  const amountEl=document.getElementById(bank+'-amount');
+  const eyeBtn=document.getElementById(bank+'-eye-btn');
+  const eyeOpen=eyeBtn.querySelector('.eye-open');
+  const eyeClosed=eyeBtn.querySelector('.eye-closed');
+  const isVisible=amountEl.dataset.visible==='true';
+  
+  if(isVisible){
+    amountEl.textContent='••••';
+    amountEl.classList.add('hidden');
+    amountEl.dataset.visible='false';
+    eyeOpen.style.display='none';
+    eyeClosed.style.display='block';
+  }else{
+    const balance=bankBalances[bank];
+    const formatted='₹'+balance.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+    amountEl.textContent=formatted;
+    amountEl.classList.remove('hidden');
+    amountEl.dataset.visible='true';
+    eyeOpen.style.display='block';
+    eyeClosed.style.display='none';
+  }
+}
+
+function updateTotalBalance(){
+  const unlockedCount=Object.keys(unlockedBanks).length;
+  const totalBanks=2;
+  
+  document.getElementById('unlockedCount').textContent=unlockedCount+'/'+totalBanks+' unlocked';
+  
+  if(unlockedCount===totalBanks){
+    const total=Object.keys(unlockedBanks).reduce((sum,bank)=>sum+bankBalances[bank],0);
+    document.getElementById('totalBalanceAmount').textContent='₹'+total.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+    document.getElementById('totalBalanceSection').style.display='block';
+  }
+}
+
+function switchBalanceTab(tab){
+  const buttons=document.querySelectorAll('.balance-tab-btn');
+  buttons.forEach(btn=>btn.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  buttons.forEach(btn=>{
+    if(btn.textContent.includes('Bank')){
+      btn.style.color='#fff';
+      btn.style.borderBottomColor='#fff';
+    }
+  });
+  
+  document.getElementById('accountsTab').style.display='block';
+}
+
+var currentPinBank=null;
+var walletUnlocked=false;
+
+document.addEventListener('DOMContentLoaded', function () {
+  try {
+    window.handleToggleClickOriginal = window.handleToggleClick;
+    window.handleToggleClick = function(mode){
+      if(mode==='wallet'||mode==='bank') return window.handleToggleClickOriginal(mode);
+      return window.handleToggleClickOriginal(mode);
+    }
+  } catch(e){}
+});
+</script>
+
+</body>
+</html>

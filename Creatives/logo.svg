@@ -1,0 +1,20 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background rounded square -->
+  <rect width="120" height="120" rx="28" fill="#5B3FD9"/>
+  <!-- Subtle inner glow -->
+  <rect width="120" height="120" rx="28" fill="url(#grad)" opacity="0.3"/>
+  <!-- Arrow path: relay line -->
+  <path d="M24 60h44" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <!-- Arrow head chevron -->
+  <path d="M56 44l16 16-16 16" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Right circle: recipient node -->
+  <circle cx="88" cy="60" r="10" fill="white"/>
+  <!-- Left circle: sender node (faded) -->
+  <circle cx="24" cy="60" r="7" fill="white" opacity="0.45"/>
+  <defs>
+    <radialGradient id="grad" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="white"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+</svg>
