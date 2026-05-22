@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pulp Pay</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;}
+:root{--p:#5B3FD9;--pg:#ede9ff;--ptxt:#3c2faa;--g:#2e7d32;--gg:#e8f5e9;--gtxt:#1b5e20;--r:#c62828;--rg:#fce4ec;--a:#e65100;--ag:#fff8e1;--atxt:#bf360c;--bd:#e8e8e8;--bg:#f4f5f8;--txt:#1a1a2e;--txt2:#555;--txt3:#aaa;}
+html,body{width:100%;min-height:100vh;background:var(--bg);margin:0;padding:0;}
+.root{background:var(--bg);min-height:100vh;width:100%;display:flex;flex-direction:column;align-items:center;padding:24px 40px 36px;}
+.topbar{width:100%;max-width:1000px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:10px;flex-wrap:wrap;}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.logobox{width:36px;height:36px;background:var(--p);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.logoname{font-size:17px;font-weight:700;color:var(--txt);letter-spacing:-0.3px;}
+.logotag{font-size:10px;color:var(--txt3);margin-top:1px;}
+.chips{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;}
+.chip{font-size:9px;padding:4px 11px;border-radius:20px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all 0.15s;white-space:nowrap;}
+.chip.active{background:var(--p);color:#fff;}
+.chip.done{background:var(--gg);color:var(--gtxt);border-color:#c8e6c9;}
+.chip.idle{background:#fff;color:var(--txt3);border-color:var(--bd);}
+.demo{display:flex;align-items:flex-start;gap:28px;width:100%;max-width:1000px;}
+.phone{width:228px;min-width:228px;flex-shrink:0;background:#fff;border-radius:34px;border:1.5px solid var(--bd);overflow:hidden;display:flex;flex-direction:column;}
+.ptop{height:20px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;}
+.pnotch{width:54px;height:13px;background:#e8e8e8;border-radius:0 0 10px 10px;}
+.pscreen{flex:1;display:flex;flex-direction:column;background:#f7f8fc;}
+.phome{height:18px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;}
+.ppill{width:44px;height:4px;background:#ddd;border-radius:2px;}
+.apphdr{background:var(--p);padding:10px 13px 9px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.hdrback{font-size:14px;color:rgba(255,255,255,0.75);cursor:pointer;padding:2px 5px;}
+.hdrtitle{font-size:12px;color:#fff;font-weight:600;flex:1;}
+.mrow{background:#fff;padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:0.5px solid #f0f0f0;flex-shrink:0;}
+.mav{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700;}
+.mnm{font-size:11px;font-weight:600;color:var(--txt);}
+.msub{font-size:9px;color:var(--txt3);}
+.amtbox{background:#fff;margin:6px 8px 0;border-radius:10px;padding:9px 12px;flex-shrink:0;}
+.amtlbl{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:0.4px;}
+.amtval{font-size:24px;font-weight:700;color:var(--txt);}
+.paycard{background:#fff;margin:5px 8px 0;border-radius:10px;overflow:hidden;flex-shrink:0;}
+.payhdr{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 0;}
+.paylbl{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:0.4px;}
+.tog3{display:inline-flex;align-items:center;background:#efefef;border-radius:22px;padding:2px;position:relative;height:26px;}
+.togtrack{position:absolute;top:2px;height:calc(100% - 4px);background:var(--p);border-radius:18px;transition:left 0.28s cubic-bezier(.4,0,.2,1),width 0.28s;z-index:0;pointer-events:none;}
+.topt{width:32px;height:22px;border-radius:18px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.bw,.cw,.ww{overflow:hidden;transition:max-height 0.32s cubic-bezier(.4,0,.2,1),opacity 0.22s;}
+.bankrow{display:flex;align-items:center;gap:7px;padding:6px 12px;border-top:0.5px solid #f5f5f5;}
+.bic{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff;flex-shrink:0;}
+.bnm{font-size:10px;font-weight:600;color:var(--txt);flex:1;}
+.bbl{font-size:9px;color:var(--txt3);}
+.radio{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--p);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:5px;}
+.radio.on::after{content:'';width:5px;height:5px;border-radius:50%;background:var(--p);display:block;}
+.estrip{background:#fff8f0;padding:5px 12px;border-top:0.5px solid #ffe8cc;}
+.etxt{font-size:9px;color:var(--a);}
+.srch{display:flex;align-items:center;gap:5px;margin:5px 10px 3px;background:#f5f5f8;border-radius:20px;padding:3px 10px;height:22px;}
+.si{font-size:9px;color:var(--txt);background:transparent;border:none;outline:none;flex:1;min-width:0;}
+.si::placeholder{color:var(--txt3);}
+.clist{overflow-y:auto;max-height:128px;}
+.clist::-webkit-scrollbar{width:2px;}
+.clist::-webkit-scrollbar-thumb{background:#e0e0e0;border-radius:2px;}
+.crow{display:flex;align-items:center;gap:7px;padding:5px 12px;cursor:pointer;transition:background 0.12s;border-top:0.5px solid #f8f8f8;}
+.crow:first-child{border-top:none;}
+.crow:hover{background:#faf8ff;}
+.crow.sel{background:var(--pg);}
+.cav{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#fff;flex-shrink:0;}
+.cnm{font-size:10px;font-weight:600;color:var(--txt);}
+.cupi{font-size:8px;color:var(--txt3);}
+.cbadge{font-size:7px;padding:2px 6px;border-radius:5px;font-weight:700;margin-left:auto;flex-shrink:0;white-space:nowrap;}
+.bg{background:var(--gg);color:var(--gtxt);}
+.br{background:var(--rg);color:var(--r);}
+.ba{background:var(--ag);color:var(--atxt);}
+.wrow{display:flex;align-items:center;gap:7px;padding:6px 12px;border-top:0.5px solid #f5f5f5;}
+.wsum{padding:7px 12px;border-top:0.5px solid #f5f5f5;display:flex;justify-content:space-between;align-items:center;}
+.sbtn{margin:5px 8px 8px;border-radius:18px;padding:0 5px 0 12px;display:flex;align-items:center;justify-content:space-between;height:34px;cursor:pointer;transition:opacity 0.2s;}
+.sbtn.dis{opacity:0.3;pointer-events:none;}
+.slbl{font-size:10px;color:rgba(255,255,255,0.9);font-weight:500;}
+.shandle{width:26px;height:26px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wscreen{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:18px;gap:5px;min-height:320px;}
+.dots{display:flex;gap:4px;margin-top:10px;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--p);animation:bop 1.3s infinite;}
+.dot:nth-child(2){animation-delay:.2s;}.dot:nth-child(3){animation-delay:.4s;}
+@keyframes bop{0%,80%,100%{transform:scale(0.7);opacity:0.4;}40%{transform:scale(1.1);opacity:1;}}
+.sscreen{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:16px;gap:4px;min-height:320px;}
+.infocol{flex:1;display:flex;flex-direction:column;gap:13px;min-width:0;}
+.icard{background:#fff;border-radius:12px;border:0.5px solid var(--bd);padding:15px 17px;}
+.istep{font-size:9px;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+.ititle{font-size:14px;font-weight:700;color:var(--txt);margin-bottom:5px;line-height:1.35;}
+.idesc{font-size:11px;color:var(--txt2);line-height:1.6;}
+.scard{background:#fff;border-radius:12px;border:0.5px solid var(--bd);padding:12px 14px;display:flex;gap:10px;}
+.sicon{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.stitle{font-size:12px;font-weight:700;color:var(--txt);margin-bottom:3px;}
+.sdesc{font-size:11px;color:var(--txt2);line-height:1.55;}
+.navrow{display:flex;align-items:center;gap:10px;margin-top:20px;}
+.navbtn{background:#fff;border:0.5px solid var(--bd);color:#555;padding:8px 20px;border-radius:22px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;-webkit-tap-highlight-color:transparent;transition:background 0.15s;}
+.navbtn:hover{background:#f5f5f5;}
+.navbtn.prim{background:var(--p);border-color:var(--p);color:#fff;}
+.navbtn.prim:hover{background:var(--ptxt);}
+.ndots{display:flex;gap:5px;}
+.ndot{width:6px;height:6px;border-radius:50%;background:#ddd;transition:all 0.2s;cursor:pointer;}
+.ndot.on{background:var(--p);width:16px;border-radius:3px;}
+.selbar{background:var(--pg);border-radius:10px;padding:7px 12px;margin:0 8px 6px;display:flex;align-items:center;gap:8px;}
+@media(max-width:800px){
+  .root{padding:16px 16px 28px;}
+  .demo{flex-direction:column;align-items:center;}
+  .phone{width:100%;max-width:360px;min-width:unset;border-radius:28px;}
+  .infocol{width:100%;max-width:640px;}
+  .chips{justify-content:flex-start;}
+  .topbar{flex-direction:column;align-items:flex-start;}
+}
+@media(max-width:440px){
+  .root{padding:10px 8px 20px;}
+  .chip{font-size:8px;padding:3px 8px;}
+  .icard{padding:12px 13px;}
+  .ititle{font-size:13px;}
+  .idesc,.sdesc{font-size:10px;}
+}
+</style>
+</head>
+<body>
+<div class="root">
+<div class="topbar">
+  <div class="logo">
+    <div class="logobox">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M3 10h10M10 7l3 3-3 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="16" cy="10" r="2" fill="#fff"/>
+        <circle cx="3" cy="10" r="1.4" fill="rgba(255,255,255,0.5)"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logoname">Pulp Pay</div>
+      <div class="logotag">Help paying made simple</div>
+    </div>
+  </div>
+  <div class="chips" id="chips"></div>
+</div>
+<div class="demo" id="demo"></div>
+<div class="navrow">
+  <button class="navbtn" id="prevBtn" onclick="nav(-1)">
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Back
+  </button>
+  <div class="ndots" id="ndots"></div>
+  <button class="navbtn prim" id="nextBtn" onclick="nav(1)">Next
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
+</div>
+
+<script>
+const STEPS=[
+  {chip:'Problem'},{chip:'Scenarios'},{chip:'The Hustle'},
+  {chip:'Scan QR'},{chip:'Pulp Pay'},{chip:'Pick Contact'},
+  {chip:'Waiting'},{chip:'Arjun Pays'},{chip:'Confirmed'},
+  {chip:'Why Pulp Pay'},
+];
+// Each toggle mode maps to a specific slide
+const MODE_SLIDE={bank:3, relay:4};
+
+let cur=0, mode='bank', selC=null, sq='';
+const CX=[
+  {i:'AK',name:'Arjun Kumar',upi:'arjun@paytm',col:'#7C3AED',wallet:'200',wt:'g'},
+  {i:'VM',name:'Vishu Menon',upi:'vishu@gpay',col:'#0284C7',wallet:null,wt:'r'},
+  {i:'DA',name:'Dad',upi:'ramdas@phonepe',col:'#0F766E',wallet:'500',wt:'g'},
+  {i:'PS',name:'Priya S',upi:'priya@upi',col:'#DB2777',wallet:'30',wt:'a'},
+  {i:'KN',name:'Karan Nair',upi:'karan@gpay',col:'#B45309',wallet:null,wt:'r'},
+  {i:'MO',name:'Mom',upi:'sunita@paytm',col:'#7C3AED',wallet:'300',wt:'g'},
+];
+function bc(w){return w==='g'?'bg':w==='r'?'br':'ba';}
+function bt(c){return c.wallet?'&#8377;'+c.wallet:'None';}
+
+function goTo(n){
+  cur=n;
+  // keep mode in sync with the destination slide
+  if(n===3) mode='bank';
+  else if(n>=4&&n<=8) mode='relay';
+  else if(n<3) mode='bank';
+  if(n<5) selC=null;
+  render();
+}
+function nav(d){const n=cur+d;if(n<0)return;if(n>=STEPS.length){goTo(0);return;}goTo(n);}
+
+// Clicking any toggle icon always jumps to that mode's dedicated slide
+function setMode(m){mode=m;selC=null;sq='';cur=MODE_SLIDE[m];render();}
+
+function pickContact(idx){selC=idx;goTo(5);}
+function doSearch(q){sq=q;const l=document.querySelector('.clist');if(l)l.innerHTML=renderCrows();}
+function sendReq(){if(selC===null)return;goTo(6);}
+function arjunPay(){goTo(8);}
+
+function bankSVG(on){const c=on?'#fff':'#999';
+  return `<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="7" width="13" height="7" rx="1.2" stroke="${c}" stroke-width="1.3"/><path d="M1.5 7l6.5-4.5L14.5 7" stroke="${c}" stroke-width="1.3" stroke-linejoin="round"/><rect x="3" y="9" width="2.5" height="3" rx="0.5" fill="${c}"/><rect x="6.75" y="9" width="2.5" height="3" rx="0.5" fill="${c}"/><rect x="10.5" y="9" width="2.5" height="3" rx="0.5" fill="${c}"/><line x1="1.5" y1="13.5" x2="14.5" y2="13.5" stroke="${c}" stroke-width="1.2"/></svg>`;}
+function relaySVG(on){const c=on?'#fff':'#999';
+  return `<svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M3 10h10M10 7l3 3-3 3" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="10" r="2" fill="${c}"/><circle cx="3" cy="10" r="1.4" fill="${c}" opacity="0.5"/></svg>`;}
+function walletSVG(on){const c=on?'#fff':'#999';
+  return `<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1.5" stroke="${c}" stroke-width="1.3"/><path d="M1 7.5h14" stroke="${c}" stroke-width="1.2"/><path d="M5 2.5h6a1 1 0 011 1V4H4V3.5a1 1 0 011-1z" stroke="${c}" stroke-width="1.2"/><rect x="10" y="9.5" width="2.5" height="2" rx="0.8" fill="${c}"/></svg>`;}
+
+function togHTML(){
+  const bOn=mode==='bank',rOn=mode==='relay';
+  const left=bOn?2:35;
+  return `<div class="tog3">
+    <div class="togtrack" style="left:${left}px;width:31px;"></div>
+    <div class="topt" onclick="setMode('bank')" title="Pay from Bank">${bankSVG(bOn)}</div>
+    <div class="topt" onclick="setMode('relay')" title="Pulp Pay">${relaySVG(rOn)}</div>
+  </div>`;}
+
+function bPanel(){const sh=mode==='bank';
+  return `<div class="bw" style="max-height:${sh?'200px':'0'};opacity:${sh?1:0};">
+    <div class="bankrow"><div class="bic" style="background:#0055A5;">SBI</div><div class="bnm">SBI Savings</div><div class="bbl">&#8377;12</div><div class="radio"></div></div>
+    <div class="bankrow"><div class="bic" style="background:#D0232B;">Axis</div><div class="bnm">Axis Bank</div><div class="bbl">&#8377;0</div><div class="radio on"></div></div>
+    <div class="estrip"><div class="etxt">Low balance or server error. Try Pulp Pay.</div></div>
+  </div>`;}
+
+function renderCrows(){
+  return CX.filter(c=>c.name.toLowerCase().includes(sq.toLowerCase())).map(c=>{
+    const idx=CX.indexOf(c);
+    return `<div class="crow${selC===idx?' sel':''}" onclick="pickContact(${idx})">
+      <div class="cav" style="background:${c.col};">${c.i}</div>
+      <div style="flex:1;min-width:0;"><div class="cnm">${c.name}</div><div class="cupi">${c.upi}</div></div>
+      <span class="cbadge ${bc(c.wt)}">${bt(c)}</span>
+    </div>`;}).join('');}
+
+function cPanel(){const sh=mode==='relay';
+  return `<div class="cw" style="max-height:${sh?'200px':'0'};opacity:${sh?1:0};">
+    <div class="srch">
+      <svg width="9" height="9" viewBox="0 0 10 10" fill="none" style="flex-shrink:0;"><circle cx="4.2" cy="4.2" r="3" stroke="#ccc" stroke-width="1.4"/><path d="M6.5 6.5l2 2" stroke="#ccc" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input class="si" placeholder="Search contacts..." value="${sq}" oninput="doSearch(this.value)"/>
+    </div>
+    <div class="clist">${renderCrows()}</div>
+  </div>`;}
+
+function wPanel(){const sh=mode==='wallet';
+  return `<div class="ww" style="max-height:${sh?'180px':'0'};opacity:${sh?1:0};">
+    <div class="wrow"><div class="cav" style="background:#0F766E;">DA</div><div style="flex:1;min-width:0;"><div class="cnm">Dad</div><div class="cupi">Pre-loaded</div></div><span class="cbadge bg">&#8377;500</span></div>
+    <div class="wrow"><div class="cav" style="background:#7C3AED;">AK</div><div style="flex:1;min-width:0;"><div class="cnm">Arjun Kumar</div><div class="cupi">Pre-loaded</div></div><span class="cbadge bg">&#8377;200</span></div>
+    <div class="wsum"><div style="font-size:10px;color:var(--txt2);">Total available</div><div style="font-size:14px;font-weight:700;color:var(--g);">&#8377; 700</div></div>
+  </div>`;}
+
+function sBtn(amt){
+  const dis=mode==='relay'&&selC===null;
+  const lbl=mode==='bank'?`Slide to pay &#8377;${amt||50}`:mode==='wallet'?`Pay with wallet PIN`:(selC!==null?`Send request to ${CX[selC].name}`:'Pick a contact first');
+  const bg=mode==='wallet'?'var(--g)':'var(--p)';
+  const fn=mode==='relay'&&selC!==null?'sendReq()':'';
+  return `<div class="sbtn${dis?' dis':''}" style="background:${bg};" onclick="${fn}">
+    <div class="slbl">${lbl}</div>
+    <div class="shandle"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="${bg}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>`;}
+
+function payScreen(mname,mamt){
+  const lbl=mode==='bank'?'Pay from':mode==='relay'?'Ask someone to pay':'Pulp Wallet';
+  const a=mamt||50;
+  return hdr('Pay via UPI')+merch(mname,a)+
+  `<div class="paycard"><div class="payhdr"><div class="paylbl">${lbl}</div>${togHTML()}</div>${bPanel()}${cPanel()}${wPanel()}</div>`+sBtn(a);}
+
+function hdr(t,back){return `<div class="apphdr"><div class="hdrback" onclick="${back||''}">&larr;</div><div class="hdrtitle">${t}</div></div>`;}
+function merch(name,amt){
+  const n=name||'Juice Junction',u=name?'admin@collegeportal.in':'juicejunction@upi';
+  return `<div class="mrow"><div class="mav" style="background:#FF6B00;">${n[0]}</div><div><div class="mnm">${n}</div><div class="msub">${u}</div></div></div><div class="amtbox"><div class="amtlbl">Amount</div><div class="amtval">&#8377; ${amt||50}</div></div>`;}
+function phone(inner,mh){
+  return `<div class="phone"><div class="ptop"><div class="pnotch"></div></div><div class="pscreen" style="min-height:${mh||400}px;">${inner}</div><div class="phome"><div class="ppill"></div></div></div>`;}
+function ic(step,title,desc,acc){
+  return `<div class="icard"${acc?` style="border-left:3px solid ${acc};"`:''}><div class="istep"${acc?` style="color:${acc};"`:''} >${step}</div><div class="ititle">${title}</div><div class="idesc">${desc}</div></div>`;}
+
+function dot(col){return `<div style="width:7px;height:7px;border-radius:50%;background:${col};margin-top:5px;flex-shrink:0;"></div>`;}
+function bullet(col,txt){return `<div style="display:flex;gap:9px;align-items:flex-start;">${dot(col)}<div style="font-size:11px;color:${col==='var(--p)'?'var(--ptxt)':col==='var(--g)'?'var(--gtxt)':'var(--txt2)'};line-height:1.6;">${txt}</div></div>`;}
+
+function buildMeta(){
+  document.getElementById('chips').innerHTML=STEPS.map((s,i)=>`<div class="chip ${i===cur?'active':i<cur?'done':'idle'}" onclick="goTo(${i})">${s.chip}</div>`).join('');
+  document.getElementById('ndots').innerHTML=STEPS.map((_,i)=>`<div class="ndot ${i===cur?'on':''}" onclick="goTo(${i})"></div>`).join('');
+  const pb=document.getElementById('prevBtn'),nb=document.getElementById('nextBtn');
+  pb.style.opacity=cur===0?'0.3':'1';pb.style.pointerEvents=cur===0?'none':'auto';
+  if(cur===STEPS.length-1){nb.innerHTML=`Restart <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6l4-4 4 4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}
+  else{nb.innerHTML=`Next <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}
+}
+
+function render(){
+  buildMeta();
+  const area=document.getElementById('demo');
+
+  if(cur===0){area.innerHTML=`<div class="infocol">
+    <div class="icard" style="border-left:3px solid var(--r);">
+      <div class="istep" style="color:var(--r);">The Problem</div>
+      <div class="ititle">Paying in India breaks when it matters most</div>
+      <div class="idesc">Bank servers go down. Balances run dry. When Jay needs to pay at a shop, he has to step outside, call someone, share the QR over WhatsApp, wait, get a screenshot and show the vendor. A 7-step ordeal in front of everyone.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;">
+      <div class="icard"><div style="width:30px;height:30px;border-radius:9px;background:#fff8f0;display:flex;align-items:center;justify-content:center;margin-bottom:8px;">${bankSVG(false).replace(/#999/g,'#e65100')}</div><div class="ititle" style="font-size:12px;">Server errors</div><div class="idesc">Banks go down mid-transaction with no fallback inside the app.</div></div>
+      <div class="icard"><div style="width:30px;height:30px;border-radius:9px;background:var(--rg);display:flex;align-items:center;justify-content:center;margin-bottom:8px;"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="1.5" stroke="#c62828" stroke-width="1.4"/><path d="M2 7h12" stroke="#c62828" stroke-width="1.4"/><line x1="5" y1="9.5" x2="11" y2="9.5" stroke="#c62828" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="ititle" style="font-size:12px;">Low balance</div><div class="idesc">Students often run out. There is no in-app way to ask for help.</div></div>
+      <div class="icard"><div style="width:30px;height:30px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;margin-bottom:8px;"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="var(--p)" stroke-width="1.4"/><path d="M5 6h6M5 9h4" stroke="var(--p)" stroke-width="1.4" stroke-linecap="round"/></svg></div><div class="ititle" style="font-size:12px;">No in-app help</div><div class="idesc">The only option is to leave the app and rely on WhatsApp and phone calls.</div></div>
+    </div>
+    <div class="icard" style="background:var(--pg);border-color:#c4b5fd;">
+      <div class="istep" style="color:var(--ptxt);">The Solution</div>
+      <div class="ititle">Pulp Pay fixes this inside your UPI app</div>
+      <div class="idesc">One toggle. Pick who pays for you. They get a native UPI request. You get instant confirmation. At most 1 quick call to inform, no screenshots, no switching apps.</div>
+    </div>
+    <div class="icard" style="background:#fffbea;border-color:#f5e090;border-left:3px solid #e6b800;">
+      <div class="istep" style="color:#b38600;">Conceptual Feature</div>
+      <div class="ititle" style="font-size:12px;color:#7a5c00;">Pulp Pay is a product concept, not a real app</div>
+      <div class="idesc" style="color:#8a6a00;">This is a design and feature proposal exploring how UPI apps could natively solve payment delegation. It is not a live product, not affiliated with any UPI provider, and is shared purely as a product thinking exercise.</div>
+    </div>
+  </div>`;return;}
+
+  if(cur===1){area.innerHTML=`<div class="infocol">
+    <div class="icard" style="border-left:3px solid var(--r);">
+      <div class="istep" style="color:var(--r);">Meet Jay</div>
+      <div class="ititle">3rd year college student, always in a rush to pay</div>
+      <div class="idesc">Jay uses UPI for everything but depends on others whenever his balance runs low or the bank server fails. Every time, it becomes an awkward ordeal.</div>
+    </div>
+    <div class="scard"><div class="sicon" style="background:#fff3e0;"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="6" width="12" height="7" rx="1.5" stroke="#e65100" stroke-width="1.4"/><path d="M5 6V5a3 3 0 016 0v1" stroke="#e65100" stroke-width="1.4" stroke-linecap="round"/></svg></div><div><div class="stitle">Juice shop</div><div class="sdesc">Jay finishes his juice and tries to pay. His SBI server is down. He calls Arjun, sends the QR via WhatsApp, waits while the queue grows behind him, calls again to confirm, gets a screenshot and shows the vendor. Everyone is watching.</div></div></div>
+    <div class="scard"><div class="sicon" style="background:var(--rg);"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 5h10M4 5V3.5A1.5 1.5 0 015.5 2h5A1.5 1.5 0 0112 3.5V5M3 5l1 8h8l1-8" stroke="#c62828" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="stitle">Supermarket</div><div class="sdesc">Jay picks up extra items and realises his cart is over budget. He calls around. Nobody picks up except Vishu who also has no money. Jay quietly puts items back on the shelf, embarrassed.</div></div></div>
+    <div class="scard"><div class="sicon" style="background:var(--pg);"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="var(--p)" stroke-width="1.4"/><path d="M5 7h6M5 10h4" stroke="var(--p)" stroke-width="1.4" stroke-linecap="round"/></svg></div><div><div class="stitle">Exam fee deadline</div><div class="sdesc">Last day to pay. Dad said call me and I will pay. Jay goes to the admin office and calls. Dad is out of network. Jay panics. There is no backup plan and the deadline is in minutes.</div></div></div>
+    <div class="scard"><div class="sicon" style="background:var(--gg);"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="var(--g)" stroke-width="1.4"/><path d="M2 14c0-2.2 2.7-4 6-4s6 1.8 6 4" stroke="var(--g)" stroke-width="1.4" stroke-linecap="round"/></svg></div><div><div class="stitle">Out with friends</div><div class="sdesc">Jay asks a friend to cover him at dinner. The friend leaves early. Jay has no money, no one is picking up calls. He is stuck with no dignified way out.</div></div></div>
+  </div>`;return;}
+
+  if(cur===2){area.innerHTML=`<div class="infocol">
+    <div class="icard" style="border-left:3px solid var(--r);">
+      <div class="istep" style="color:var(--r);">What Jay does today</div>
+      <div class="ititle">7 steps just to borrow a payment</div>
+      <div class="idesc">Every time Jay needs help paying, he runs through the same painful process across multiple apps while someone waits at the counter.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px;">
+      ${[['Call a friend or parent','#e65100'],['Screenshot the payment QR','#c62828'],['Send it over WhatsApp','#2e7d32'],['Wait for them to open the app','#0055A5'],['Call again to confirm they paid','#c62828'],['Wait for a receipt screenshot','#e65100'],['Show the vendor the screenshot','#5B3FD9']].map((s,i)=>`
+      <div style="display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;border:0.5px solid var(--bd);padding:9px 14px;">
+        <div style="width:22px;height:22px;border-radius:50%;background:${s[1]}20;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${s[1]};flex-shrink:0;">${i+1}</div>
+        <div style="font-size:11px;color:var(--txt);">${s[0]}</div>
+      </div>`).join('')}
+    </div>
+    <div class="icard" style="background:var(--pg);border-color:#c4b5fd;">
+      <div class="istep" style="color:var(--ptxt);">With Pulp Pay</div>
+      <div class="ititle">3 taps. 1 app. 1 call at most.</div>
+      <div class="idesc">Scan QR, tap Pulp Pay toggle, pick Arjun, slide to request. Done. Confirmation appears on Jay's screen instantly.</div>
+    </div>
+  </div>`;return;}
+
+  if(cur===3){mode='bank';
+    area.innerHTML=phone(payScreen())+`<div class="infocol">
+    ${ic('Step 1','Jay scans the QR','The normal UPI payment screen opens. Both banks show problems. Jay needs another way to pay.')}
+    <div class="icard" style="background:#fafafa;">
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;align-items:center;gap:8px;"><div class="bic" style="background:#0055A5;font-size:7px;">SBI</div><div style="flex:1;font-size:11px;font-weight:600;color:var(--txt);">SBI Savings</div><div style="font-size:10px;color:var(--r);">Server error</div></div>
+        <div style="display:flex;align-items:center;gap:8px;"><div class="bic" style="background:#D0232B;font-size:7px;">Axis</div><div style="flex:1;font-size:11px;font-weight:600;color:var(--txt);">Axis Bank</div><div style="font-size:10px;color:var(--r);">Balance &#8377;0</div></div>
+      </div>
+    </div>
+    <div class="icard" style="background:var(--pg);border-color:#c4b5fd;">
+      <div style="font-size:11px;font-weight:600;color:var(--ptxt);margin-bottom:6px;">The 2-way toggle in the phone routes to:</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:center;gap:8px;">${bankSVG(true).replace(/#fff/g,'var(--p)')}<span style="font-size:11px;color:var(--ptxt);font-weight:600;">Bank (active now) - this page</span></div>
+        <div style="display:flex;align-items:center;gap:8px;">${relaySVG(false)}<span style="font-size:11px;color:var(--txt2);">Pulp arrow - goes to Pulp Pay</span></div>
+      </div>
+    </div>
+  </div>`;return;}
+
+  if(cur===4){mode='relay';selC=null;
+    area.innerHTML=phone(payScreen())+`<div class="infocol">
+    ${ic('Step 2','Tap the Pulp Pay toggle','Bank list slides away. A scrollable contact list with search slides in. No switching apps needed.','var(--p)')}
+    <div class="icard" style="background:var(--pg);border-color:#c4b5fd;">
+      <div style="font-size:11px;font-weight:600;color:var(--ptxt);margin-bottom:6px;">Toggle is always live - tap any icon:</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:center;gap:8px;">${bankSVG(false)}<span style="font-size:11px;color:var(--txt2);">Bank icon takes you to Scan QR</span></div>
+        <div style="display:flex;align-items:center;gap:8px;">${relaySVG(true).replace(/#fff/g,'var(--p)')}<span style="font-size:11px;color:var(--ptxt);font-weight:600;">Pulp (active now) - this page</span></div>
+      </div>
+    </div>
+    <div class="icard" style="background:#fafafa;">
+      <div style="font-size:11px;color:var(--txt2);">Tap any contact in the phone to select them and continue.</div>
+    </div>
+  </div>`;return;}
+
+  if(cur===5){mode='relay';
+    const sc=selC!==null?CX[selC]:null;
+    area.innerHTML=phone(
+      hdr('Pay via UPI','goTo(4)')+merch(null,50)+
+      `<div class="paycard"><div class="payhdr"><div class="paylbl">Ask someone to pay</div>${togHTML()}</div>
+      <div class="cw" style="max-height:200px;opacity:1;">
+        <div class="srch"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" style="flex-shrink:0;"><circle cx="4.2" cy="4.2" r="3" stroke="#ccc" stroke-width="1.4"/><path d="M6.5 6.5l2 2" stroke="#ccc" stroke-width="1.4" stroke-linecap="round"/></svg><input class="si" placeholder="Search contacts..." value="${sq}" oninput="doSearch(this.value)"/></div>
+        <div class="clist">${renderCrows()}</div>
+      </div></div>`+
+      (sc?`<div class="selbar"><div class="cav" style="background:${sc.col};width:22px;height:22px;font-size:8px;">${sc.i}</div><div style="flex:1;min-width:0;"><div style="font-size:9px;font-weight:600;color:var(--ptxt);">Selected: ${sc.name}</div></div><div class="sbtn" style="background:var(--p);margin:0;height:26px;padding:0 6px 0 9px;" onclick="sendReq()"><div class="slbl" style="font-size:8px;">Send request</div><div class="shandle" style="width:20px;height:20px;"><svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="var(--p)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>`
+      :`<div style="padding:6px 12px 8px;font-size:9px;color:var(--txt3);">Tap a contact above to select them</div>`)
+    )+`<div class="infocol">
+    ${ic('Step 3','Tap a contact to select them','Tap any name to select. A confirmation bar appears at the bottom. Tap Send request to continue.','var(--p)')}
+    <div class="icard">
+      <div class="istep">Wallet badges</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px;">
+        <div style="display:flex;align-items:center;gap:8px;"><span class="cbadge bg">&#8377;200</span><span style="font-size:11px;color:var(--txt2);">Pre-loaded, deducts instantly</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span class="cbadge ba">&#8377;30</span><span style="font-size:11px;color:var(--txt2);">Low wallet, may not cover</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span class="cbadge br">None</span><span style="font-size:11px;color:var(--txt2);">Gets a live UPI pay request</span></div>
+      </div>
+    </div>
+  </div>`;return;}
+
+  if(cur===6){const sc=CX[selC!==null?selC:0];
+    area.innerHTML=phone(hdr('Pulp Pay','goTo(5)')+`<div class="wscreen">
+      <div style="width:50px;height:50px;border-radius:50%;background:var(--pg);display:flex;align-items:center;justify-content:center;margin-bottom:6px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="var(--p)" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="var(--p)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <div style="font-size:12px;font-weight:700;color:var(--txt);">Request Sent</div>
+      <div style="font-size:10px;color:var(--txt3);">Waiting for</div>
+      <div style="font-size:15px;font-weight:700;color:var(--p);">${sc.name}</div>
+      <div style="font-size:10px;color:var(--txt3);">to pay &#8377;50 to Juice Junction</div>
+      <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      <div style="font-size:9px;color:#ccc;margin-top:10px;">Stay on this screen</div>
+    </div>`)+`<div class="infocol">
+    ${ic('Step 4','Request is live','Jay slides to send. His screen locks into a waiting state. Arjun gets a native UPI collect popup automatically on his phone.')}
+    <div class="icard" style="background:var(--pg);border-color:#c4b5fd;">
+      <div style="font-size:10px;font-weight:700;color:var(--ptxt);margin-bottom:4px;">Built on UPI collect requests</div>
+      <div style="font-size:11px;color:var(--ptxt);line-height:1.6;">The same system used by Swiggy and Zomato for QR payments. No new infrastructure needed.</div>
+    </div>
+  </div>`;return;}
+
+  if(cur===7){area.innerHTML=`
+    <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+      <div style="font-size:9px;color:var(--txt3);font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px;">Arjun's Phone</div>
+      <div class="phone">
+        <div class="ptop"><div class="pnotch"></div></div>
+        <div class="pscreen" style="background:#f0f0f5;min-height:400px;padding:12px 9px;display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:9px;color:var(--txt3);font-weight:700;letter-spacing:0.4px;">NOW</div>
+          <div style="background:#fff;border-radius:12px;padding:14px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div style="width:28px;height:28px;background:var(--p);border-radius:8px;display:flex;align-items:center;justify-content:center;"><svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M3 10h10M10 7l3 3-3 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="10" r="1.8" fill="#fff"/></svg></div>
+              <div><div style="font-size:11px;font-weight:700;color:var(--txt);">Pulp Pay Request</div></div>
+              <div style="font-size:9px;color:var(--txt3);margin-left:auto;">now</div>
+            </div>
+            <div style="font-size:11px;color:#555;line-height:1.5;margin-bottom:7px;"><strong style="color:var(--txt);">Jay</strong> wants you to pay on his behalf</div>
+            <div style="font-size:22px;font-weight:700;color:var(--txt);">&#8377; 50</div>
+            <div style="font-size:10px;color:var(--txt3);margin-bottom:10px;">to Juice Junction</div>
+            <div style="display:flex;gap:6px;">
+              <button style="flex:1;padding:7px;border-radius:8px;font-size:10px;font-weight:700;background:var(--rg);color:var(--r);border:none;cursor:pointer;" onclick="goTo(6)">Decline</button>
+              <button style="flex:1;padding:7px;border-radius:8px;font-size:10px;font-weight:700;background:var(--p);color:#fff;border:none;cursor:pointer;" onclick="arjunPay()">Pay &#8377;50</button>
+            </div>
+          </div>
+          <div style="background:#fff;border-radius:12px;padding:12px;opacity:0.35;">
+            <div style="font-size:9px;color:var(--txt3);">EARLIER</div>
+            <div style="font-size:11px;color:#888;margin-top:3px;">GPay payment of &#8377;120 to Zomato</div>
+          </div>
+        </div>
+        <div class="phome"><div class="ppill"></div></div>
+      </div>
+    </div>
+    <div class="infocol">
+      ${ic('Step 5','Arjun sees a native UPI popup','No WhatsApp needed. Arjun taps Pay, enters his PIN and the payment completes instantly.')}
+      <div class="icard" style="background:var(--gg);border-color:#a5d6a7;">
+        <div style="font-size:10px;font-weight:700;color:var(--gtxt);margin-bottom:4px;">Tap Pay above to see the flow complete</div>
+        <div style="font-size:11px;color:var(--gtxt);line-height:1.6;">When Arjun taps Pay, Jay's waiting screen updates to confirmation automatically.</div>
+      </div>
+    </div>`;return;}
+
+  if(cur===8){const sc=CX[selC!==null?selC:0];
+    area.innerHTML=phone(hdr('Confirmed')+`<div class="sscreen">
+      <div style="width:52px;height:52px;border-radius:50%;background:var(--gg);display:flex;align-items:center;justify-content:center;margin-bottom:6px;"><svg width="28" height="28" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11" stroke="#2e7d32" stroke-width="1.8"/><path d="M8 13l4 4 6-7" stroke="#2e7d32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div style="font-size:13px;font-weight:700;color:var(--g);">Payment Successful</div>
+      <div style="font-size:10px;color:var(--txt3);">Juice Junction received</div>
+      <div style="font-size:24px;font-weight:700;color:var(--txt);">&#8377; 50</div>
+      <div style="background:var(--pg);border-radius:8px;padding:5px 12px;margin-top:4px;"><div style="font-size:9px;color:var(--p);font-weight:700;text-align:center;">Paid by ${sc.name} via Pulp Pay</div></div>
+      <div style="font-size:8px;color:#ccc;margin-top:4px;">UPI Ref: 2024RELAY8843920</div>
+      <div style="width:100%;height:0.5px;background:#f0f0f0;margin:10px 0;"></div>
+      <div style="font-size:10px;color:#888;text-align:center;">Show this to the vendor</div>
+      <div style="width:72px;height:72px;background:#f5f5f5;border-radius:9px;margin-top:6px;display:flex;align-items:center;justify-content:center;"><svg width="44" height="44" viewBox="0 0 48 48" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="#ccc" stroke-width="1.8"/><rect x="28" y="4" width="16" height="16" rx="2" stroke="#ccc" stroke-width="1.8"/><rect x="4" y="28" width="16" height="16" rx="2" stroke="#ccc" stroke-width="1.8"/><rect x="8" y="8" width="8" height="8" rx="1" fill="#ddd"/><rect x="32" y="8" width="8" height="8" rx="1" fill="#ddd"/><rect x="8" y="32" width="8" height="8" rx="1" fill="#ddd"/><rect x="28" y="28" width="4" height="4" fill="#ddd"/><rect x="36" y="28" width="4" height="4" fill="#ddd"/><rect x="32" y="36" width="4" height="4" fill="#ddd"/><rect x="28" y="36" width="4" height="4" fill="#ddd"/><rect x="36" y="36" width="4" height="4" fill="#ddd"/></svg></div>
+    </div>`)+`<div class="infocol">
+    ${ic('Done!','Jay shows the screen to the vendor','Screen updates the moment Arjun pays. No screenshot needed. Jay just turns the phone around.','var(--g)')}
+    <div class="icard" style="background:#fafafa;">
+      <div class="istep">What changed</div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px;">
+        <div style="font-size:11px;color:var(--r);">Before: 7 steps, 3 apps, 2 calls</div>
+        <div style="font-size:11px;color:var(--g);font-weight:700;">After: 3 taps, 1 app, 1 call at most</div>
+      </div>
+    </div>
+    <div class="icard" style="background:var(--pg);border-color:#c4b5fd;"><div style="font-size:11px;color:var(--ptxt);">Next: see the Wallet feature for when nobody is reachable at all.</div></div>
+  </div>`;return;}
+
+  if(cur===9){area.innerHTML=`<div class="infocol">
+    <div class="icard" style="border-left:3px solid var(--p);">
+      <div class="istep" style="color:var(--p);">Why Pulp Pay</div>
+      <div class="ititle">India processes 16 billion UPI transactions every month. Millions still fail or get abandoned.</div>
+      <div class="idesc">The infrastructure is ready. The habit is set. What is missing is a way to get help paying without leaving the app.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;">
+      <div class="icard" style="border-top:3px solid var(--p);"><div style="font-size:24px;font-weight:700;color:var(--p);margin-bottom:4px;">7</div><div style="font-size:11px;font-weight:700;color:var(--txt);margin-bottom:3px;">Steps today</div><div style="font-size:10px;color:var(--txt2);">To ask someone to pay for you using the current workaround</div></div>
+      <div class="icard" style="border-top:3px solid var(--g);"><div style="font-size:24px;font-weight:700;color:var(--g);margin-bottom:4px;">3</div><div style="font-size:11px;font-weight:700;color:var(--txt);margin-bottom:3px;">Steps with Pulp Pay</div><div style="font-size:10px;color:var(--txt2);">Tap toggle, pick contact, slide to request</div></div>
+      <div class="icard" style="border-top:3px solid var(--a);"><div style="font-size:24px;font-weight:700;color:var(--a);margin-bottom:4px;">1</div><div style="font-size:11px;font-weight:700;color:var(--txt);margin-bottom:3px;">Call at most</div><div style="font-size:10px;color:var(--txt2);">One quick call to inform, then the request handles everything inside the app</div></div>
+    </div>
+    <div class="icard" style="background:var(--pg);border-color:#c4b5fd;">
+      <div class="istep" style="color:var(--ptxt);">Why Pulp Pay fits UPI perfectly</div>
+      <div style="display:flex;flex-direction:column;gap:7px;margin-top:5px;">
+        ${bullet('var(--p)','UPI collect requests already exist. Pulp Pay is a smarter trigger on top of them, so no new payment rail is needed.')}
+        ${bullet('var(--p)','Any UPI app can implement it. The payer and requester do not need to use the same app.')}
+        ${bullet('var(--p)','It adds dignity to the process. No public phone calls, no WhatsApp QR codes, no waiting for receipts.')}
+      </div>
+    </div>
+    <div class="icard" style="background:var(--txt);">
+      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:5px;">One feature that fixes the real gap in UPI</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.6;">No new apps. No new habits. Just a smarter toggle inside the UPI app you already use every day.</div>
+    </div>
+  </div>`;return;}
+}
+
+render();
+</script>
+</body>
+</html>
