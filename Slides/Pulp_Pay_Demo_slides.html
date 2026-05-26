@@ -157,15 +157,15 @@ const MODE_SLIDE={bank:3, Pulp:4};
 
 let cur=0, mode='bank', selC=null, sq='';
 const CX=[
-  {i:'AK',name:'Arjun Kumar',upi:'arjun@paytm',col:'#7C3AED',wallet:'200',wt:'g'},
-  {i:'VM',name:'Vishu Menon',upi:'vishu@gpay',col:'#0284C7',wallet:null,wt:'r'},
-  {i:'DA',name:'Dad',upi:'ramdas@phonepe',col:'#0F766E',wallet:'500',wt:'g'},
-  {i:'PS',name:'Priya S',upi:'priya@upi',col:'#DB2777',wallet:'30',wt:'a'},
-  {i:'KN',name:'Karan Nair',upi:'karan@gpay',col:'#B45309',wallet:null,wt:'r'},
-  {i:'MO',name:'Mom',upi:'sunita@paytm',col:'#7C3AED',wallet:'300',wt:'g'},
+  {i:'AK',name:'Arjun Kumar',upi:'arjun@paytm',col:'#7C3AED',wt:'g'},
+  {i:'VM',name:'Vishu Menon',upi:'vishu@gpay',col:'#0284C7',wt:'r'},
+  {i:'DA',name:'Dad',upi:'ramdas@phonepe',col:'#0F766E',wt:'g'},
+  {i:'PS',name:'Priya S',upi:'priya@upi',col:'#DB2777',wt:'a'},
+  {i:'KN',name:'Karan Nair',upi:'karan@gpay',col:'#B45309',wt:'r'},
+  {i:'MO',name:'Mom',upi:'sunita@paytm',col:'#7C3AED',wt:'g'},
 ];
 function bc(w){return w==='g'?'bg':w==='r'?'br':'ba';}
-function bt(c){return c.wallet?'&#8377;'+c.wallet:'None';}
+function bt(c){return '';}
 
 function goTo(n){
   cur=n;
@@ -190,8 +190,6 @@ function bankSVG(on){const c=on?'#fff':'#999';
   return `<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="7" width="13" height="7" rx="1.2" stroke="${c}" stroke-width="1.3"/><path d="M1.5 7l6.5-4.5L14.5 7" stroke="${c}" stroke-width="1.3" stroke-linejoin="round"/><rect x="3" y="9" width="2.5" height="3" rx="0.5" fill="${c}"/><rect x="6.75" y="9" width="2.5" height="3" rx="0.5" fill="${c}"/><rect x="10.5" y="9" width="2.5" height="3" rx="0.5" fill="${c}"/><line x1="1.5" y1="13.5" x2="14.5" y2="13.5" stroke="${c}" stroke-width="1.2"/></svg>`;}
 function relaySVG(on){const c=on?'#fff':'#999';
   return `<svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M3 10h10M10 7l3 3-3 3" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="10" r="2" fill="${c}"/><circle cx="3" cy="10" r="1.4" fill="${c}" opacity="0.5"/></svg>`;}
-function walletSVG(on){const c=on?'#fff':'#999';
-  return `<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1.5" stroke="${c}" stroke-width="1.3"/><path d="M1 7.5h14" stroke="${c}" stroke-width="1.2"/><path d="M5 2.5h6a1 1 0 011 1V4H4V3.5a1 1 0 011-1z" stroke="${c}" stroke-width="1.2"/><rect x="10" y="9.5" width="2.5" height="2" rx="0.8" fill="${c}"/></svg>`;}
 
 function togHTML(){
   const bOn=mode==='bank',rOn=mode==='Pulp';
@@ -205,8 +203,8 @@ function togHTML(){
 function bPanel(){const sh=mode==='bank';
   return `<div class="bw" style="max-height:${sh?'200px':'0'};opacity:${sh?1:0};">
     <div class="bankrow"><div class="bic" style="background:#0055A5;">SBI</div><div class="bnm">SBI Savings</div><div class="bbl">&#8377;12</div><div class="radio"></div></div>
-    <div class="bankrow"><div class="bic" style="background:#D0232B;">Axis</div><div class="bnm">Axis Bank</div><div class="bbl">&#8377;0</div><div class="radio on"></div></div>
-    <div class="estrip"><div class="etxt">Low balance or server error. Try Pulp Pay.</div></div>
+    <div class="bankrow"><div class="bic" style="background:#D0232B;">Axis</div><div class="bnm">Axis Bank</div><div class="bbl" style="color:#c62828;">Server error</div><div class="radio on"></div></div>
+    <div class="estrip"><div class="etxt">Bank server error. Try Pulp Pay.</div></div>
   </div>`;}
 
 function renderCrows(){
@@ -227,17 +225,12 @@ function cPanel(){const sh=mode==='Pulp';
     <div class="clist">${renderCrows()}</div>
   </div>`;}
 
-function wPanel(){const sh=mode==='wallet';
-  return `<div class="ww" style="max-height:${sh?'180px':'0'};opacity:${sh?1:0};">
-    <div class="wrow"><div class="cav" style="background:#0F766E;">DA</div><div style="flex:1;min-width:0;"><div class="cnm">Dad</div><div class="cupi">Pre-loaded</div></div><span class="cbadge bg">&#8377;500</span></div>
-    <div class="wrow"><div class="cav" style="background:#7C3AED;">AK</div><div style="flex:1;min-width:0;"><div class="cnm">Arjun Kumar</div><div class="cupi">Pre-loaded</div></div><span class="cbadge bg">&#8377;200</span></div>
-    <div class="wsum"><div style="font-size:10px;color:var(--txt2);">Total available</div><div style="font-size:14px;font-weight:700;color:var(--g);">&#8377; 700</div></div>
-  </div>`;}
+function wPanel(){return '';}
 
 function sBtn(amt){
   const dis=mode==='Pulp'&&selC===null;
-  const lbl=mode==='bank'?`Slide to pay &#8377;${amt||50}`:mode==='wallet'?`Pay with wallet PIN`:(selC!==null?`Send request to ${CX[selC].name}`:'Pick a contact first');
-  const bg=mode==='wallet'?'var(--g)':'var(--p)';
+  const lbl=mode==='bank'?`Slide to pay &#8377;${amt||50}`:(selC!==null?`Send request to ${CX[selC].name}`:'Pick a contact first');
+  const bg='var(--p)';
   const fn=mode==='Pulp'&&selC!==null?'sendReq()':'';
   return `<div class="sbtn${dis?' dis':''}" style="background:${bg};" onclick="${fn}">
     <div class="slbl">${lbl}</div>
@@ -245,7 +238,7 @@ function sBtn(amt){
   </div>`;}
 
 function payScreen(mname,mamt){
-  const lbl=mode==='bank'?'Pay from':mode==='Pulp'?'Ask someone to pay':'Pulp Wallet';
+  const lbl=mode==='bank'?'Pay from':'Ask someone to pay';
   const a=mamt||50;
   return hdr('Pay via UPI')+merch(mname,a)+
   `<div class="paycard"><div class="payhdr"><div class="paylbl">${lbl}</div>${togHTML()}</div>${bPanel()}${cPanel()}${wPanel()}</div>`+sBtn(a);}
@@ -304,10 +297,10 @@ function render(){
       <div class="ititle">3rd year college student, always in a rush to pay</div>
       <div class="idesc">Jay uses UPI for everything but depends on others whenever his balance runs low or the bank server fails. Every time, it becomes an awkward ordeal.</div>
     </div>
-    <div class="scard"><div class="sicon" style="background:#fff3e0;"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="6" width="12" height="7" rx="1.5" stroke="#e65100" stroke-width="1.4"/><path d="M5 6V5a3 3 0 016 0v1" stroke="#e65100" stroke-width="1.4" stroke-linecap="round"/></svg></div><div><div class="stitle">Juice shop</div><div class="sdesc">Jay finishes his juice and tries to pay. His SBI server is down. He calls Arjun, sends the QR via WhatsApp, waits while the queue grows behind him, calls again to confirm, gets a screenshot and shows the vendor. Everyone is watching.</div></div></div>
-    <div class="scard"><div class="sicon" style="background:var(--rg);"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 5h10M4 5V3.5A1.5 1.5 0 015.5 2h5A1.5 1.5 0 0112 3.5V5M3 5l1 8h8l1-8" stroke="#c62828" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="stitle">Supermarket</div><div class="sdesc">Jay picks up extra items and realises his cart is over budget. He calls around. Nobody picks up except Vishu who also has no money. Jay quietly puts items back on the shelf, embarrassed.</div></div></div>
-    <div class="scard"><div class="sicon" style="background:var(--pg);"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="var(--p)" stroke-width="1.4"/><path d="M5 7h6M5 10h4" stroke="var(--p)" stroke-width="1.4" stroke-linecap="round"/></svg></div><div><div class="stitle">Exam fee deadline</div><div class="sdesc">Last day to pay. Dad said call me and I will pay. Jay goes to the admin office and calls. Dad is out of network. Jay panics. There is no backup plan and the deadline is in minutes.</div></div></div>
-    <div class="scard"><div class="sicon" style="background:var(--gg);"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="var(--g)" stroke-width="1.4"/><path d="M2 14c0-2.2 2.7-4 6-4s6 1.8 6 4" stroke="var(--g)" stroke-width="1.4" stroke-linecap="round"/></svg></div><div><div class="stitle">Out with friends</div><div class="sdesc">Jay asks a friend to cover him at dinner. The friend leaves early. Jay has no money, no one is picking up calls. He is stuck with no dignified way out.</div></div></div>
+    <div class="scard"><div class="sicon" style="background:#fff3e0;"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="6" width="12" height="7" rx="1.5" stroke="#e65100" stroke-width="1.4"/><path d="M5 6V5a3 3 0 016 0v1" stroke="#e65100" stroke-width="1.4" stroke-linecap="round"/></svg></div><div><div class="stitle">Juice shop</div><div class="sdesc">Jay finishes his juice and tries to pay. His Bank server is down. He calls Arjun, sends the QR via WhatsApp, waits while the queue grows behind him, calls again to confirm, gets a screenshot and shows the vendor. Everyone is watching.</div></div></div>
+    <div class="scard"><div class="sicon" style="background:var(--rg);"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 5h10M4 5V3.5A1.5 1.5 0 015.5 2h5A1.5 1.5 0 0112 3.5V5M3 5l1 8h8l1-8" stroke="#c62828" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="stitle">Supermarket</div><div class="sdesc">Jay picks up extra items and realises his Bank Server is down. Jay quietly puts items back on the shelf, embarrassed.</div></div></div>
+    <div class="scard"><div class="sicon" style="background:var(--pg);"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="var(--p)" stroke-width="1.4"/><path d="M5 7h6M5 10h4" stroke="var(--p)" stroke-width="1.4" stroke-linecap="round"/></svg></div><div><div class="stitle">Exam fee deadline</div><div class="sdesc">Last day to pay. Dad sent the money. Jay tries paying at the admin office, but the bank server is down. Jay panics as the deadline is just minutes away.</div></div></div>
+    <div class="scard"><div class="sicon" style="background:var(--gg);"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="var(--g)" stroke-width="1.4"/><path d="M2 14c0-2.2 2.7-4 6-4s6 1.8 6 4" stroke="var(--g)" stroke-width="1.4" stroke-linecap="round"/></svg></div><div><div class="stitle">Out with friends</div><div class="sdesc">Jay asks a friend to cover him at dinner. The friend leaves early. Jay has no money, He is stuck with no dignified way out.</div></div></div>
   </div>`;return;}
 
   if(cur===2){area.innerHTML=`<div class="infocol">
@@ -335,8 +328,8 @@ function render(){
     ${ic('Step 1','Jay scans the QR','The normal UPI payment screen opens. Both banks show problems. Jay needs another way to pay.')}
     <div class="icard" style="background:#fafafa;">
       <div style="display:flex;flex-direction:column;gap:7px;">
-        <div style="display:flex;align-items:center;gap:8px;"><div class="bic" style="background:#0055A5;font-size:7px;">SBI</div><div style="flex:1;font-size:11px;font-weight:600;color:var(--txt);">SBI Savings</div><div style="font-size:10px;color:var(--r);">Server error</div></div>
-        <div style="display:flex;align-items:center;gap:8px;"><div class="bic" style="background:#D0232B;font-size:7px;">Axis</div><div style="flex:1;font-size:11px;font-weight:600;color:var(--txt);">Axis Bank</div><div style="font-size:10px;color:var(--r);">Balance &#8377;0</div></div>
+        <div style="display:flex;align-items:center;gap:8px;"><div class="bic" style="background:#0055A5;font-size:7px;">SBI</div><div style="flex:1;font-size:11px;font-weight:600;color:var(--txt);">SBI Savings</div><div style="font-size:10px;color:var(--r);">Balance &#8377;12</div></div>
+	<div style="display:flex;align-items:center;gap:8px;"><div class="bic" style="background:#D0232B;font-size:7px;">Axis</div><div style="flex:1;font-size:11px;font-weight:600;color:var(--txt);">Axis Bank</div><div style="font-size:10px;color:var(--r);">Server Down</div></div>
       </div>
     </div>
     <div class="icard" style="background:var(--pg);border-color:#c4b5fd;">
@@ -376,14 +369,6 @@ function render(){
       :`<div style="padding:6px 12px 8px;font-size:9px;color:var(--txt3);">Tap a contact above to select them</div>`)
     )+`<div class="infocol">
     ${ic('Step 3','Tap a contact to select them','Tap any name to select. A confirmation bar appears at the bottom. Tap Send request to continue.','var(--p)')}
-    <div class="icard">
-      <div class="istep">Wallet badges</div>
-      <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px;">
-        <div style="display:flex;align-items:center;gap:8px;"><span class="cbadge bg">&#8377;200</span><span style="font-size:11px;color:var(--txt2);">Pre-loaded, deducts instantly</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span class="cbadge ba">&#8377;30</span><span style="font-size:11px;color:var(--txt2);">Low wallet, may not cover</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span class="cbadge br">None</span><span style="font-size:11px;color:var(--txt2);">Gets a live UPI pay request</span></div>
-      </div>
-    </div>
   </div>`;return;}
 
   if(cur===6){const sc=CX[selC!==null?selC:0];
@@ -460,7 +445,6 @@ function render(){
         <div style="font-size:11px;color:var(--g);font-weight:700;">After: 3 taps, 1 app, 1 call at most</div>
       </div>
     </div>
-    <div class="icard" style="background:var(--pg);border-color:#c4b5fd;"><div style="font-size:11px;color:var(--ptxt);">Next: see the Wallet feature for when nobody is reachable at all.</div></div>
   </div>`;return;}
 
   if(cur===9){area.innerHTML=`<div class="infocol">
