@@ -1012,20 +1012,41 @@ function goScreen(id){
   const s=document.getElementById('screen-'+id);
   if(s)s.classList.add('active');
   currentScreen = id;
+  // starting a new payment flow should allow payment success events again
+  if(['pay','scan','waiting'].includes(id)){
+    window.paymentSuccessImpressionFired = false;
+  }
   if(id==='home' && previousScreen !== 'home'){
     if(!guideActive && window.setEventSource){window.setEventSource('home_page');}
     if(window.trackEvent){
       window.trackEvent('page_impression','home_page',{source:window.currentSource});
     }
   }
-  if(id==='success' && !window.paymentSuccessImpressionFired && window.trackEvent){
-    window.paymentSuccessImpressionFired=true;
+  if(id==='success' && window.trackEvent){
     const sc=CX[selContact!==null?selContact:0];
-    window.trackEvent('page_impression','payment_success',{
-      source:window.currentSource,
-      amount:String(payAmt),
-      contact_name: sc?sc.name:''
-    });
+    // If this success screen was reached from the guide, send the event
+    // but do not mark the global flag so real payments can still fire later.
+    if(window.currentSource === 'guide'){
+      // Avoid duplicate firing during guide steps (Next may call goScreen repeatedly)
+      window.paymentSuccessGuideFired = window.paymentSuccessGuideFired || false;
+      if(!window.paymentSuccessGuideFired){
+        window.trackEvent('page_impression','payment_success',{
+          source:window.currentSource,
+          amount:String(payAmt),
+          contact_name: sc?sc.name:''
+        });
+        window.paymentSuccessGuideFired = true;
+      }
+    } else {
+      if(!window.paymentSuccessImpressionFired){
+        window.paymentSuccessImpressionFired = true;
+        window.trackEvent('page_impression','payment_success',{
+          source:window.currentSource,
+          amount:String(payAmt),
+          contact_name: sc?sc.name:''
+        });
+      }
+    }
   }
   const hdr=document.getElementById('appHdr'),nav=document.getElementById('bottomNav');
   hdr.style.display=HIDE_HDR.includes(id)?'none':'';
@@ -1097,6 +1118,8 @@ function getStepList(){
 
 function startGuide(){
   gStep=0;guideBranch='none';guideWaitingFor=null;guideActive=true;
+  // reset guide-specific fired flag so the guide can fire success once per run
+  window.paymentSuccessGuideFired = false;
   if(window.setEventSource){window.setEventSource('guide');}
   goScreen('home');payMode='bank';selContact=null;
   setMode('bank');
