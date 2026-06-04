@@ -190,8 +190,8 @@ box-shadow:none;
 .amt-row{display:flex;align-items:center;gap:4px;}
 .amt-sym{font-size:24px;font-weight:700;color:var(--txt3);}
 .amt-input{font-size:32px;font-weight:700;color:var(--txt);letter-spacing:-0.5px;font-family:'DM Mono',monospace;border:none;outline:none;background:transparent;width:100%;min-width:0;}
-.amt-input::-webkit-outer-spin-button,.amt-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-.amt-input[type=number]{-moz-appearance:textfield;}
+.amt-input::-webkit-outer-spin-button,.amt-input::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0;}
+.amt-input[type=number]{-moz-appearance:textfield;appearance:textfield;}
 .amt-sub{font-size:11px;color:var(--txt3);margin-top:4px;}
 .mode-card{background:var(--card);border-radius:14px;border:1px solid var(--bd);box-shadow:var(--shadow);overflow:hidden;}
 .mode-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 0;}
@@ -800,6 +800,7 @@ box-shadow:none;
   </div>
 </div>
 
+<script src="EventTracker.js"></script>
 <script>
 const CX=[
   {i:'AK',name:'Arjun Kumar',upi:'arjun@paytm',col:'#7C3AED',wallet:'200',wt:'g'},
@@ -812,6 +813,7 @@ const CX=[
 
 let payMode='bank', selContact=null;
 let payAmt=0;
+let currentScreen=null;
 
 function renderContacts(q=''){
   const list=document.getElementById('cList');
@@ -881,6 +883,7 @@ function onAmtChange(v){
 }
 
 function handleToggleClick(m){
+  if(m==='relay'&&window.trackEvent){window.trackEvent('toggle_click','relay_toggle',{source:window.currentSource});}
   if(guideActive&&guideWaitingFor==='toggle'){
     guideWaitingFor=null;
     setMode(m);
@@ -940,6 +943,11 @@ function handleSlideSend(){
 
 function sendRequest(){
   const sc=CX[selContact];
+  if(window.trackEvent){window.trackEvent('slide_request_click','send_request',{
+    source:window.currentSource,
+    amount:String(payAmt),
+    contact_name: sc?sc.name:''
+  });}
   document.getElementById('waitName').textContent=sc.name;
   document.getElementById('waitAmtLine').textContent='to pay ₹'+payAmt+' to Juice Junction';
   document.getElementById('simulateBtnText').textContent='Simulate: '+sc.name.split(' ')[0]+' receives notification';
@@ -984,6 +992,7 @@ function handleScanClick(){
   payAmt=0;
   document.getElementById('amtInput').value='0';
   document.getElementById('amtSub').textContent='Please enter an amount above ₹12 to proceed';
+  if(window.trackEvent){window.trackEvent('scan_click','scan_qr',{source:window.currentSource});}
   if(guideActive&&guideWaitingFor==='scanBtn'){guideWaitingFor=null;goScreen('scan');setTimeout(()=>showGuideStep(gStep+1),200);return;}
   goScreen('scan');
 }
@@ -998,9 +1007,26 @@ const HIDE_NAV=['scan','waiting','success','failed'];
 const NAV_MAP={home:'home',scan:'home',pay:'home',waiting:'home',success:'home',failed:'home',history:'history',profile:'profile',contacts:'home'};
 
 function goScreen(id){
+  const previousScreen=currentScreen;
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const s=document.getElementById('screen-'+id);
   if(s)s.classList.add('active');
+  currentScreen = id;
+  if(id==='home' && previousScreen !== 'home'){
+    if(!guideActive && window.setEventSource){window.setEventSource('home_page');}
+    if(window.trackEvent){
+      window.trackEvent('page_impression','home_page',{source:window.currentSource});
+    }
+  }
+  if(id==='success' && !window.paymentSuccessImpressionFired && window.trackEvent){
+    window.paymentSuccessImpressionFired=true;
+    const sc=CX[selContact!==null?selContact:0];
+    window.trackEvent('page_impression','payment_success',{
+      source:window.currentSource,
+      amount:String(payAmt),
+      contact_name: sc?sc.name:''
+    });
+  }
   const hdr=document.getElementById('appHdr'),nav=document.getElementById('bottomNav');
   hdr.style.display=HIDE_HDR.includes(id)?'none':'';
   nav.style.display=HIDE_NAV.includes(id)?'none':'flex';
@@ -1071,6 +1097,7 @@ function getStepList(){
 
 function startGuide(){
   gStep=0;guideBranch='none';guideWaitingFor=null;guideActive=true;
+  if(window.setEventSource){window.setEventSource('guide');}
   goScreen('home');payMode='bank';selContact=null;
   setMode('bank');
   
@@ -1256,6 +1283,7 @@ function chooseBranch(b){
 
 function endGuide(){
   guideActive=false;guideWaitingFor=null;
+  if(window.setEventSource){window.setEventSource('home_page');}
   const overlay=document.getElementById('guideOverlay');
   overlay.classList.remove('active');
   const tog3=document.getElementById('tog3');
