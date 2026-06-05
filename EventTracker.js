@@ -3,6 +3,7 @@
   const USER_KEY = 'pulpUserId';
   const SESSION_KEY = 'pulpSessionId';
   const DEFAULT_SOURCE = 'home_page';
+  const WORKER_URL = 'https://pulp-pay.saikiranj2002.workers.dev/';
 
   const EVENT_KEY_MAP = {
     'page_impression:home_page': 'evt-1a2b-3c4d',
@@ -90,75 +91,75 @@
     };
   }
 
+  // Send single event to Worker
+  function sendEventToServer(event){
+    if (!event || !event.event_id) {
+      console.warn('Event missing event_id:', event);
+      return;
+    }
+
+    fetch(WORKER_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(event),
+      mode: 'cors',
+      keepalive: true
+    }).then(response => {
+      console.log('Event sent, Worker status:', response.status);
+      if (response.ok) {
+        // Remove this event from localStorage
+        removeEventFromStorage(event.event_id);
+      }
+      return response.json();
+    }).then(data => {
+      console.log('Worker response:', data);
+    }).catch(error => {
+      console.warn('Failed to send event:', error);
+    });
+  }
+
+  function removeEventFromStorage(eventId){
+    const events = getStoredEvents();
+    const remaining = events.filter(e => e.event_id !== eventId);
+    saveEvents(remaining);
+  }
+
   function trackEvent(eventType, feature, options){
     const event = buildEvent(eventType, feature, options || {});
     const events = getStoredEvents();
     events.push(event);
     saveEvents(events);
     console.log('trackEvent', event);
-    // attempt to deliver events soon (non-blocking)
-    try { scheduleSend(); } catch(e){}
+    
+    // Send immediately to Worker
+    sendEventToServer(event);
+    
     return event;
   }
 
-  /* Delivery / batching to Cloudflare Worker */
-  const WORKER_ENDPOINT = 'https://pulp-pay.saikiranj2002.workers.dev/';
-  const BATCH_SIZE = 25;
-  const SEND_INTERVAL_MS = 5000; // minimum gap between sends
-  const LAST_SEND_KEY = 'pulpEventsLastSend';
-  let sendScheduled = false;
-
-  function getLastSend(){
-    return parseInt(localStorage.getItem(LAST_SEND_KEY) || '0', 10);
-  }
-
-  function setLastSend(ts){
-    try{ localStorage.setItem(LAST_SEND_KEY, String(ts)); }catch(e){}
-  }
-
-  async function sendQueuedEvents(){
-    // basic rate limit
-    const now = Date.now();
-    if(now - getLastSend() < SEND_INTERVAL_MS) return;
-    const events = getStoredEvents();
-    if(!events || events.length===0) return;
-
-    const batch = events.slice(0, BATCH_SIZE);
-    const payload = { events: batch };
-
-    try{
-      const resp = await fetch(WORKER_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        mode: 'cors',
-        keepalive: true
-      });
-      setLastSend(now);
-      if(resp.ok){
-        // remove successfully sent events from storage
-        const remaining = getStoredEvents().slice(batch.length);
-        saveEvents(remaining);
-      } else {
-        // non-OK — do not drop events; back off slightly
-        console.warn('EventTracker: worker responded', resp.status);
+  // Send pending events on page load (retry offline events)
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const events = getStoredEvents();
+      if (events.length > 0) {
+        events.forEach(event => {
+          sendEventToServer(event);
+        });
       }
-    }catch(err){
-      // network or CORS error — keep events and retry later
-      setLastSend(now);
-      console.warn('EventTracker: failed to send events', err);
+    }, 2000);
+  });
+
+  // Retry sending every 30 seconds
+  setInterval(() => {
+    const events = getStoredEvents();
+    if (events.length > 0) {
+      events.forEach(event => {
+        sendEventToServer(event);
+      });
     }
-  }
-
-  function scheduleSend(){
-    if(sendScheduled) return;
-    sendScheduled = true;
-    setTimeout(()=>{ sendScheduled = false; sendQueuedEvents().catch(()=>{}); }, 800);
-  }
-
-  // periodic background sender and online retry
-  window.addEventListener('online', ()=>{ try{ sendQueuedEvents().catch(()=>{}); }catch(e){} });
-  setInterval(()=>{ try{ sendQueuedEvents().catch(()=>{}); }catch(e){} }, 10000);
+  }, 30000);
 
   function setEventSource(source){
     window.currentSource = source || DEFAULT_SOURCE;
