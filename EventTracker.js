@@ -96,8 +96,69 @@
     events.push(event);
     saveEvents(events);
     console.log('trackEvent', event);
+    // attempt to deliver events soon (non-blocking)
+    try { scheduleSend(); } catch(e){}
     return event;
   }
+
+  /* Delivery / batching to Cloudflare Worker */
+  const WORKER_ENDPOINT = 'https://pulp-pay.saikiranj2002.workers.dev/';
+  const BATCH_SIZE = 25;
+  const SEND_INTERVAL_MS = 5000; // minimum gap between sends
+  const LAST_SEND_KEY = 'pulpEventsLastSend';
+  let sendScheduled = false;
+
+  function getLastSend(){
+    return parseInt(localStorage.getItem(LAST_SEND_KEY) || '0', 10);
+  }
+
+  function setLastSend(ts){
+    try{ localStorage.setItem(LAST_SEND_KEY, String(ts)); }catch(e){}
+  }
+
+  async function sendQueuedEvents(){
+    // basic rate limit
+    const now = Date.now();
+    if(now - getLastSend() < SEND_INTERVAL_MS) return;
+    const events = getStoredEvents();
+    if(!events || events.length===0) return;
+
+    const batch = events.slice(0, BATCH_SIZE);
+    const payload = { events: batch };
+
+    try{
+      const resp = await fetch(WORKER_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        mode: 'cors',
+        keepalive: true
+      });
+      setLastSend(now);
+      if(resp.ok){
+        // remove successfully sent events from storage
+        const remaining = getStoredEvents().slice(batch.length);
+        saveEvents(remaining);
+      } else {
+        // non-OK — do not drop events; back off slightly
+        console.warn('EventTracker: worker responded', resp.status);
+      }
+    }catch(err){
+      // network or CORS error — keep events and retry later
+      setLastSend(now);
+      console.warn('EventTracker: failed to send events', err);
+    }
+  }
+
+  function scheduleSend(){
+    if(sendScheduled) return;
+    sendScheduled = true;
+    setTimeout(()=>{ sendScheduled = false; sendQueuedEvents().catch(()=>{}); }, 800);
+  }
+
+  // periodic background sender and online retry
+  window.addEventListener('online', ()=>{ try{ sendQueuedEvents().catch(()=>{}); }catch(e){} });
+  setInterval(()=>{ try{ sendQueuedEvents().catch(()=>{}); }catch(e){} }, 10000);
 
   function setEventSource(source){
     window.currentSource = source || DEFAULT_SOURCE;
