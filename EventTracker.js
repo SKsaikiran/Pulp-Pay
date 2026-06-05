@@ -3,7 +3,6 @@
   const USER_KEY = 'pulpUserId';
   const SESSION_KEY = 'pulpSessionId';
   const DEFAULT_SOURCE = 'home_page';
-  const WORKER_URL = 'https://pulp-pay.saikiranj2002.workers.dev/';
 
   const EVENT_KEY_MAP = {
     'page_impression:home_page': 'evt-1a2b-3c4d',
@@ -91,75 +90,14 @@
     };
   }
 
-  // Send single event to Worker
-  function sendEventToServer(event){
-    if (!event || !event.event_id) {
-      console.warn('Event missing event_id:', event);
-      return;
-    }
-
-    fetch(WORKER_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(event),
-      mode: 'cors',
-      keepalive: true
-    }).then(response => {
-      console.log('Event sent, Worker status:', response.status);
-      if (response.ok) {
-        // Remove this event from localStorage
-        removeEventFromStorage(event.event_id);
-      }
-      return response.json();
-    }).then(data => {
-      console.log('Worker response:', data);
-    }).catch(error => {
-      console.warn('Failed to send event:', error);
-    });
-  }
-
-  function removeEventFromStorage(eventId){
-    const events = getStoredEvents();
-    const remaining = events.filter(e => e.event_id !== eventId);
-    saveEvents(remaining);
-  }
-
   function trackEvent(eventType, feature, options){
     const event = buildEvent(eventType, feature, options || {});
     const events = getStoredEvents();
     events.push(event);
     saveEvents(events);
     console.log('trackEvent', event);
-    
-    // Send immediately to Worker
-    sendEventToServer(event);
-    
     return event;
   }
-
-  // Send pending events on page load (retry offline events)
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      const events = getStoredEvents();
-      if (events.length > 0) {
-        events.forEach(event => {
-          sendEventToServer(event);
-        });
-      }
-    }, 2000);
-  });
-
-  // Retry sending every 30 seconds
-  setInterval(() => {
-    const events = getStoredEvents();
-    if (events.length > 0) {
-      events.forEach(event => {
-        sendEventToServer(event);
-      });
-    }
-  }, 30000);
 
   function setEventSource(source){
     window.currentSource = source || DEFAULT_SOURCE;
