@@ -12,7 +12,9 @@ This project demonstrates how to collect user interaction events from a static w
 
 ## Architecture
 
-<img src="Event Tracker Pipeline/event_tracking_secure_architecture.svg" width="700" />
+<p align="center">
+  <img src="./event_tracking_secure_architecture.svg" alt="Architecture Diagram" width="900">
+</p>
 
 ---
 
