@@ -170,9 +170,3 @@ This architecture provides:
 | API Gateway | Cloudflare Workers |
 | Storage | Supabase |
 | Runtime | JavaScript |
-
----
-
-## License
-
-MIT
